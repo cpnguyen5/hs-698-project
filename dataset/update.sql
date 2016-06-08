@@ -1,3 +1,4 @@
+--update empty string ('') values to NULL for each column in TABLE puf
 UPDATE puf SET npi=NULL WHERE npi='';
 UPDATE puf SET provider_last_name=NULL WHERE provider_last_name='';
 UPDATE puf SET provider_first_name=NULL WHERE provider_first_name='';
@@ -25,7 +26,7 @@ UPDATE puf SET average_submitted_charge_amount=NULL WHERE average_submitted_char
 UPDATE puf SET average_medicare_payment_amount=NULL WHERE average_medicare_payment_amount='';
 UPDATE puf SET average_medicare_standardized_amount=NULL WHERE average_medicare_standardized_amount='';
 
-
+--update empty string ('') values to NULL for each column in TABLE report
 UPDATE report SET npi=NULL WHERE npi ='';
 UPDATE report SET provider_last_name=NULL WHERE provider_last_name='';
 UPDATE report SET provider_first_name=NULL WHERE provider_first_name='';

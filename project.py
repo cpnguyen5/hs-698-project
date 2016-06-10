@@ -9,34 +9,33 @@ def get_path():
     return f_name
 
 
-def create_table(path):
+def create_table(path, data):
 
-    db_file = os.path.join(path, 'cms1.db')
+    db_file = os.path.join(path, 'cms2.db')
     schema_file = os.path.join(path, 'cms_schema.sql')
 
     db_is_new = not os.path.exists(db_file)
     #Connecting/Creating database file
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-
-    if db_is_new:
-        print "Database created, creating table(s) schema"
-        print "Reading SQL script..."
-        f_schema = open(schema_file, 'r')
-        schema = f_schema.read()
-        f_schema.close()
-        c.executescript(schema) #create schema
-
-
-    else:
-        print "Database exists; opened successfully"
+    #
+    # if db_is_new:
+    #     print "Database created, creating table(s) schema"
+    #     print "Reading SQL script..."
+    #     f_schema = open(schema_file, 'r')
+    #     schema = f_schema.read()
+    #     f_schema.close()
+    #     c.executescript(schema) #create schema
 
 
+    # else:
+    #     print "Database exists; opened successfully"
 
-
-
+    conn.text_factory= lambda x: unicode(x, 'utf-8', 'ignore')
+    cms2 = data.to_sql(db_file, con=conn, flavor='sqlite', if_exists='append')
+    print cms2
     conn.commit()
-    return
+    return cms2
 
 
 # def query(path):
@@ -179,7 +178,10 @@ data = pd.read_csv(os.path.join(get_path(),'Medicare_Physician_and_Other_Supplie
                                "percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders": int_conv,
                                "percent_of_beneficiaries_identified_with_stroke": int_conv,
                                "average_HCC_risk_score_of_beneficiaries": float_conv})
-print data['npi']
+# print data.isnull()
+
+
+print create_table(get_path(), data)
 
 
 # print data.isnull().sum()

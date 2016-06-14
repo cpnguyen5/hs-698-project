@@ -33,57 +33,43 @@ def create_table(path, data):
         print "Database exists; opened successfully"
 
     conn.text_factory= lambda x: unicode(x, 'utf-8', 'ignore')
-    cms2 = data.to_sql('report', con=conn, flavor='sqlite', if_exists='append', index=False)
+    cms = data.to_sql('report', con=conn, flavor='sqlite', if_exists='append', index=False)
 
     f_update = open(update_file, 'r')
     update = f_update.read()
     f_update.close()
     c.executescript(update)
     conn.commit()
-    return cms2
+    return cms
 
 
-# def query(path):
-#
-#     head_path, file = os.path.split(path)
-#     queries_path = os.path.join(head_path, "cms_queries.sql")
-#     print queries_path
-#
-#     conn = sqlite3.connect(path) #create/open database
-#     print "Connected to database successfully"
-#     c = conn.cursor()
+def query(path):
+
+    db_file = os.path.join(path, 'cms1.db')
+    queries_file = os.path.join(path, "cms_queries.sql")
+    print queries_file
+
+    conn = sqlite3.connect(db_file) #create/open database
+    print "Connected to database successfully"
+    with conn:
+
+        c = conn.cursor()
+
+        print "Reading SQL script..."
+        f_queries = open(queries_file, 'r')
+        que = f_queries.read()
+        f_queries.close()
+
+        print "Running SQL script..."
+        # c.executescript(que)
+
+        c.execute("SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer FROM report GROUP BY provider_state_code;")
+        rows = c.fetchall()
+        # for row in rows:
+            # print row, type(row), str(row[0]), type(row[1])
+    return rows
 
 
-
-    # print "Reading SQL script..."
-    # sql_file = open(queries_path, 'r')
-    # sql = sql_file.read()
-    # sql_file.close()
-
-    # print "Running SQL script..."
-    # # c.executescript(sql)
-
-    # c = conn.execute("SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer FROM report GROUP BY provider_state_code;")
-    # # for row in c:
-    # #     print row, str(row[0]), type(row[1])
-    # # print tuple(c)
-    # lst = []
-    # for row in c:
-    #     lst+= [[str(row[0])] + [row[1]]]
-    # print lst
-    # return
-
-
-# query(get_path())
-
-# conn = sqlite3.connect(get_path())
-# c = conn.cursor()
-
-# c.execute('SELECT npi from puf WHERE npi < 1300000000')
-# print c.fetchone()
-# print c.fetchone()
-#
-# print "\n", c.fetchall()
 
 columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
            "provider_gender", "provider_entity_type", "provider_street_address_1", "provider_street_address_2", "provider_city",
@@ -189,8 +175,9 @@ data = pd.read_csv(os.path.join(get_path(),'Medicare_Physician_and_Other_Supplie
 
 
 # print type(data["provider_middle_initial"][1]), data["provider_middle_initial"][1]
-print create_table(get_path(), data)
-
+# print get_path()
+# print create_table(get_path(), data)
+print query(get_path())
 
 # print data.isnull().sum()
 # print data.dropna()

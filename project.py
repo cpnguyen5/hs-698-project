@@ -57,18 +57,30 @@ def query(path):
 
         print "Reading SQL script..."
         f_queries = open(queries_file, 'r')
-        que = f_queries.read()
+        query = f_queries.read()
         f_queries.close()
 
+        query_commands=query.split(';')
+        # print query_commands
+
         print "Running SQL script..."
-        # c.executescript(que)
+        query_lst=[]
+        for command in query_commands:
+            # try:
+            c.execute(command)
+            row = c.fetchall()
+            query_lst+=[row]
+            # except OperationalError, msg:
+            #     print "Command skipped: ", msg
 
-        c.execute("SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer FROM report GROUP BY provider_state_code;")
-        rows = c.fetchall()
+
+        # c.execute("SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer FROM report GROUP BY provider_state_code;")
+        # print c.fetchone()
+        # rows = c.fetchall()
         # for row in rows:
-            # print row, type(row), str(row[0]), type(row[1])
-    return rows
-
+        #     print row
+    # return rows
+    return query_lst
 
 
 columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
@@ -178,6 +190,7 @@ data = pd.read_csv(os.path.join(get_path(),'Medicare_Physician_and_Other_Supplie
 # print get_path()
 # print create_table(get_path(), data)
 print query(get_path())
+
 
 # print data.isnull().sum()
 # print data.dropna()

@@ -5,7 +5,7 @@ import numpy as np
 import csv
 
 def get_path():
-    f_name = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
+    f_name = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'api', 'dataset')
     return f_name
 
 
@@ -189,7 +189,7 @@ data = pd.read_csv(os.path.join(get_path(),'Medicare_Physician_and_Other_Supplie
 # print type(data["provider_middle_initial"][1]), data["provider_middle_initial"][1]
 # print get_path()
 # print create_table(get_path(), data)
-print query(get_path())
+# print query(get_path())
 
 
 # print data.isnull().sum()

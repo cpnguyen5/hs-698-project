@@ -54,4 +54,5 @@ def state():
     # for i in range(len(dict)):
     #     print dict[i][0], sum(dict[i][1])
         # dict[i][1]=sum(dict[i][1])
+
     return render_template("state.html", rows=dict)

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Data</title>
+    </head>
+    {% extends "base.html" %}
+    {% block content %}
+    <body>
+        <table border = 1>
+            <thead>
+                <td>npi</td>
+                <td>provider_last_name</td>
+                <td>provider_first_name</td>
+                <td>provider_middle_initial</td>
+                <td>provider_credentials</td>
+                <td>provider_gender</td>
+                <td>provider_entity_type</td> <td>provider_street_address_1</td>
+                <td>provider_street_address_2</td>
+                <td>provider_city</td>
+                <td>provider_zip_code</td> <td>provider_state_code</td>
+                <td>provider_country_code</td> <td>provider_type</td>
+                <td>medicare_participation_indicator</td>
+                <td>number_of_HCPCS</td> <td>number_of_services</td>
+                <td>number_of_medicare_beneficiaries</td>
+                <td>total_submitted_charge_amount</td>
+                <td>total_medicare_allowed_amount</td>
+                <td>total_medicare_payment_amount</td>
+                <td>total_medicare_standardized_payment_amount</td>
+                <td>drug_suppress_indicator</td> <td>number_of_HCPCS_associated_with_drug_services</td>
+                <td>number_of_drug_services</td>
+                <td>number_of_medicare_beneficiaries_with_drug_services</td> <td>total_drug_submitted_charge_amount</td>
+                <td>total_drug_medicare_allowed_amount</td>
+                <td>total_drug_medicare_payment_amount</td>
+                <td>total_drug_medicare_standardized_payment_amount</td>
+                <td>medical_suppress_indicator</td>
+                <td>number_of_HCPCS_associated_medical_services</td>
+                <td>number_of_medical_services</td>
+                <td>number_of_medicare_beneficiaries_with_medical_services</td>
+                <td>total_medical_submitted_charge_amount</td>
+                <td>total_medical_medicare_allowed_amount</td>
+                <td>total_medical_medicare_payment_amount</td>
+                <td>total_medical_medicare_standardized_payment_amount</td>
+                <td>average_age_of_beneficiaries</td>
+                <td>number_of_beneficiaries_age_less_65</td>
+                <td>number_of_beneficiaries_age_65_to_74</td>
+                <td>number_of_beneficiaries_age_75_to_84</td>
+                <td>number_of_beneficiaries_age_greater_84</td>
+                <td>number_of_female_beneficiaries</td>
+                <td>number_of_male_beneficiaries</td>
+                <td>number_of_non_hispanic_white_beneficiaries</td>
+                <td>number_of_african_american_beneficiaries</td>
+                <td>number_of_asian_pacific_islander_beneficiaries</td>
+                <td>number_of_hispanic_beneficiaries</td>
+                <td>number_of_american_indian_alaskan_native_beneficiaries</td>
+                <td>number_of_beneficiaries_with_race_not_elsewhere_classified</td>
+                <td>number_of_beneficiaries_with_medicare_only_entitlement</td>
+                <td>number_of_beneficiaries_with_medicare_and_medicaid_entitlement</td>
+                <td>percent_of_beneficiaries_identified_with_atrial_fibrillation</td>
+                <td>percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia</td>
+                <td>percent_of_beneficiaries_identified_with_asthma</td>
+                <td>percent_of_beneficiaries_identified_with_cancer</td>
+                <td>percent_of_beneficiaries_identified_with_heart_failure</td>
+                <td>percent_of_beneficiaries_identified_with_chronic_kidney_disease</td>
+                <td>percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease</td>
+                <td>percent_of_beneficiaries_identified_with_depression</td>
+                <td>percent_of_beneficiaries_identified_with_diabetes</td>
+                <td>percent_of_beneficiaries_identified_with_hyperlipidemia</td>
+                <td>percent_of_beneficiaries_identified_with_hypertension</td>
+                <td>percent_of_beneficiaries_identified_with_ischemic_heart_disease</td>
+                <td>percent_of_beneficiaries_identified_with_osteoporosis</td>
+                <td>percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis</td>
+                <td>percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders</td>
+                <td>percent_of_beneficiaries_identified_with_stroke</td>
+                <td>average_HCC_risk_score_of_beneficiaries</td>
+            </thead>
+
+            {% for row in data %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[5]}}</td>
+                    <td>{{row[6]}}</td>
+                    <td>{{row[7]}}</td>
+                    <td>{{row[8]}}</td>
+                    <td>{{row[9]}}</td>
+                    <td>{{row[10]}}</td>
+                    <td>{{row[11]}}</td>
+                    <td>{{row[12]}}</td>
+                    <td>{{row[13]}}</td>
+                    <td>{{row[14]}}</td>
+                    <td>{{row[15]}}</td>
+                    <td>{{row[16]}}</td>
+                    <td>{{row[17]}}</td>
+                    <td>{{row[18]}}</td>
+                    <td>{{row[19]}}</td>
+                    <td>{{row[20]}}</td>
+                    <td>{{row[21]}}</td>
+                    <td>{{row[22]}}</td>
+                    <td>{{row[23]}}</td>
+                    <td>{{row[24]}}</td>
+                    <td>{{row[25]}}</td>
+                    <td>{{row[26]}}</td>
+                    <td>{{row[27]}}</td>
+                    <td>{{row[28]}}</td>
+                    <td>{{row[29]}}</td>
+                    <td>{{row[30]}}</td>
+                    <td>{{row[31]}}</td>
+                    <td>{{row[32]}}</td>
+                    <td>{{row[33]}}</td>
+                    <td>{{row[34]}}</td>
+                    <td>{{row[35]}}</td>
+                    <td>{{row[36]}}</td>
+                    <td>{{row[37]}}</td>
+                    <td>{{row[38]}}</td>
+                    <td>{{row[39]}}</td>
+                    <td>{{row[40]}}</td>
+                    <td>{{row[41]}}</td>
+                    <td>{{row[42]}}</td>
+                    <td>{{row[43]}}</td>
+                    <td>{{row[44]}}</td>
+                    <td>{{row[45]}}</td>
+                    <td>{{row[46]}}</td>
+                    <td>{{row[47]}}</td>
+                    <td>{{row[48]}}</td>
+                    <td>{{row[49]}}</td>
+                    <td>{{row[50]}}</td>
+                    <td>{{row[51]}}</td>
+                    <td>{{row[52]}}</td>
+                    <td>{{row[53]}}</td>
+                    <td>{{row[54]}}</td>
+                    <td>{{row[55]}}</td>
+                    <td>{{row[56]}}</td>
+                    <td>{{row[57]}}</td>
+                    <td>{{row[58]}}</td>
+                    <td>{{row[59]}}</td>
+                    <td>{{row[60]}}</td>
+                    <td>{{row[61]}}</td>
+                    <td>{{row[62]}}</td>
+                    <td>{{row[63]}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </body>
+    {% endblock %}
+</html>

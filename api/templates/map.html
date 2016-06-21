@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <!-- I recommend you host this file on your own, since this will change without warning -->
+  <script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>
+  <h2>Datamaps Playground</h2>
+  <div id="container" style="position: relative; width: 1000px; height: 1000px;"></div>
+
+     <!--{ d_state }-->
+     <script>
+       var map = new Datamap({
+            element: document.getElementById('container'),
+            scope: 'usa',
+            geographyConfig: {
+                highlightBorderColor: '#eaeaea',
+                highlightBorderWidth: 3,
+                popupTemplate: function(geography, data) {
+                    return '<div class="hoverinfo"><strong>' + geography.properties.name + '</strong> <br />Cancer Prevalence:' + data.prevalence + '%' + ' </div>'
+                    }
+
+                },
+          fills: {
+          'HIGH': '#00819c',
+          'LOW': '#e1b120',
+          defaultFill: '#69a264'
+        },
+        data:{
+          "AZ": {
+              "fillKey": "HIGH",
+              "prevalence": 2
+          },
+          "CO": {
+              "fillKey": "HIGH",
+              "prevalence": 5
+          },
+          "DE": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "FL": {
+              "fillKey": "HIGH",
+              "prevalence": 29
+          },
+          "GA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "HI": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "ID": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "IL": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "IN": {
+              "fillKey": "HIGH",
+              "prevalence": 11
+          },
+          "IA": {
+              "fillKey": "HIGH",
+              "prevalence": 11
+          },
+          "KS": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "KY": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "LA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "MD": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "ME": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "MA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "MN": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "MI": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "MS": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "MO": {
+              "fillKey": "HIGH",
+              "prevalence": 13
+          },
+          "MT": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NC": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NE": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NV": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NH": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NJ": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NY": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "ND": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "NM": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "OH": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "OK": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "OR": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "PA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "RI": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "SC": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "SD": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "TN": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "TX": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "UT": {
+              "fillKey": "LOW",
+              "prevalence": 32
+          },
+          "WI": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "VA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "VT": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "WA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "WV": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "WY": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "CA": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "CT": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "AK": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "AR": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          },
+          "AL": {
+              "fillKey": "HIGH",
+              "prevalence": 32
+          }
+        }
+        });
+
+
+
+     </script>
+

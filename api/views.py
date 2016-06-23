@@ -9,9 +9,12 @@ import json
 from flask import jsonify
 
 
-def get_data():
+def get_db():
+    db_file=os.path.join(project.get_path(),'cms.db')
+    if not os.path.isfile(db_file):
+        project.create_table()
 
-    project.query()
+
 
 @app.route('/')
 def home():
@@ -21,7 +24,7 @@ def home():
 def state():
 
     path = project.get_path()
-    db_file = os.path.join(path, 'cms1.db')
+    db_file = os.path.join(path, 'cms.db')
     conn = sqlite3.connect(db_file)  # create/open database
     conn.row_factory=sqlite3.Row
 
@@ -65,7 +68,7 @@ def state():
 def map():
 
     path = project.get_path()
-    db_file = os.path.join(path, 'cms1.db')
+    db_file = os.path.join(path, 'cms.db')
     conn = sqlite3.connect(db_file)  # create/open database
     conn.row_factory = sqlite3.Row
 
@@ -210,4 +213,3 @@ def data():
 
 
 ##main
-data=os.path

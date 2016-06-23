@@ -10,10 +10,10 @@ from flask import jsonify
 
 
 def get_db():
-    db_file=os.path.join(project.get_path(),'cms.db')
-    if not os.path.isfile(db_file):
+    db_path=os.path.join(project.get_path(),'cms.db')
+    if not os.path.isfile(db_path):
         project.create_table()
-
+    return db_path
 
 
 @app.route('/')
@@ -23,8 +23,7 @@ def home():
 @app.route('/state')
 def state():
 
-    path = project.get_path()
-    db_file = os.path.join(path, 'cms.db')
+    db_file = get_db()
     conn = sqlite3.connect(db_file)  # create/open database
     conn.row_factory=sqlite3.Row
 
@@ -67,8 +66,7 @@ def state():
 @app.route('/map')
 def map():
 
-    path = project.get_path()
-    db_file = os.path.join(path, 'cms.db')
+    db_file = get_db()
     conn = sqlite3.connect(db_file)  # create/open database
     conn.row_factory = sqlite3.Row
 

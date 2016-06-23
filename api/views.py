@@ -141,7 +141,8 @@ def map():
     #
     # map_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'tmp', 'state_map.csv') #save new CSV file at bar_path
     # df.to_csv(map_path, index=False) #DataFrame to CSV file in static/tmp
-    return render_template("map.html", d_state=dict_state)
+    return render_template("map.html", d_state=dict_state, js_file=url_for('static',
+                                                                           filename='js/datamaps.usa.min.js'))
     # return render_template('map.html', d_file=url_for('static',
     #                                                   filename='tmp/state_map.csv'))
 
@@ -207,4 +208,6 @@ def data():
     # data = json.loads(df.to_json()) #exports data frame as json string --> load/parsed json into python object (dict or lsit)
     # return jsonify(data)
 
-# data()
+
+##main
+data=os.path

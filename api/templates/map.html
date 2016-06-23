@@ -4,8 +4,9 @@
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
   <!-- I recommend you host this file on your own, since this will change without warning -->
-  <script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>
-  <h2>Datamaps Playground</h2>
+  <!--<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>-->
+  <script src= {{ js_file }} ></script>
+  <h1>CMS Beneficiaries: Cancer Prevalence</h1>
   <div id="container" style="position: relative; width: 1000px; height: 1000px;"></div>
 
      <!--{ d_state }-->
@@ -15,217 +16,217 @@
             scope: 'usa',
             geographyConfig: {
                 highlightBorderColor: '#eaeaea',
-                highlightBorderWidth: 3,
+                highlightBorderWidth: 5,
                 popupTemplate: function(geography, data) {
-                    return '<div class="hoverinfo"><strong>' + geography.properties.name + '</strong> <br />Cancer Prevalence:' + data.prevalence + '%' + ' </div>'
+                    return '<div class="hoverinfo"><strong>' + geography.properties.name + '</strong> <br /> Average Cancer Prevalence:' + data.prevalence + '%' + ' </div>'
                     }
 
                 },
           fills: {
-          'HIGH': '#00819c',
-          'LOW': '#e1b120',
+          <!--'HIGH': '#00819c',-->
+          <!--'LOW': '#e1b120',-->
           defaultFill: '#69a264'
         },
         data:{
           "AZ": {
-              "fillKey": "HIGH",
-              "prevalence": 2
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['AZ'] }}
           },
           "CO": {
-              "fillKey": "HIGH",
-              "prevalence": 5
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['CO'] }}
           },
           "DE": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['DE'] }}
           },
           "FL": {
-              "fillKey": "HIGH",
-              "prevalence": 29
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['FL'] }}
           },
           "GA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['GA'] }}
           },
           "HI": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['HI'] }}
           },
           "ID": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['ID'] }}
           },
           "IL": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['IL'] }}
           },
           "IN": {
-              "fillKey": "HIGH",
-              "prevalence": 11
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['IN'] }}
           },
           "IA": {
-              "fillKey": "HIGH",
-              "prevalence": 11
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['IA'] }}
           },
           "KS": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['KS'] }}
           },
           "KY": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['KY'] }}
           },
           "LA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['LA'] }}
           },
           "MD": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MD'] }}
           },
           "ME": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['ME'] }}
           },
           "MA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MA'] }}
           },
           "MN": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MN'] }}
           },
           "MI": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MI'] }}
           },
           "MS": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MS'] }}
           },
           "MO": {
-              "fillKey": "HIGH",
-              "prevalence": 13
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MO'] }}
           },
           "MT": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['MT'] }}
           },
           "NC": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NC'] }}
           },
           "NE": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NE'] }}
           },
           "NV": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NV'] }}
           },
           "NH": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NH'] }}
           },
           "NJ": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NJ'] }}
           },
           "NY": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NY'] }}
           },
           "ND": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['ND'] }}
           },
           "NM": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['NM'] }}
           },
           "OH": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['OH'] }}
           },
           "OK": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['OK'] }}
           },
           "OR": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['OR'] }}
           },
           "PA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['PA'] }}
           },
           "RI": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['RI'] }}
           },
           "SC": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['SC'] }}
           },
           "SD": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['SD'] }}
           },
           "TN": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['TN'] }}
           },
           "TX": {
               "fillKey": "HIGH",
-              "prevalence": 32
+              "prevalence": {{ d_state['TX'] }}
           },
           "UT": {
-              "fillKey": "LOW",
-              "prevalence": 32
+              <!--"fillKey": "LOW",-->
+              "prevalence": {{ d_state['UT'] }}
           },
           "WI": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['WI'] }}
           },
           "VA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['VA'] }}
           },
           "VT": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['VT'] }}
           },
           "WA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['WA'] }}
           },
           "WV": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['WV'] }}
           },
           "WY": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['WY'] }}
           },
           "CA": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['CA'] }}
           },
           "CT": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['CT'] }}
           },
           "AK": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['AK'] }}
           },
           "AR": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['AR'] }}
           },
           "AL": {
-              "fillKey": "HIGH",
-              "prevalence": 32
+              <!--"fillKey": "HIGH",-->
+              "prevalence": {{ d_state['AL'] }}
           }
         }
         });

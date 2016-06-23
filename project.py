@@ -184,5 +184,4 @@ def query(path):
 # print data.isnull().sum()
 # print data.dropna()
 # print data.shape
-# print data
 # print data.dropna().dtypes

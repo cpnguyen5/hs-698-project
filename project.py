@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import numpy as np
 import csv
+from pyzipcode import Pyzipcode as pz
 
 
 def get_path():
@@ -39,14 +40,141 @@ def readCSV():
                "percent_of_beneficiaries_identified_with_osteoporosis", "percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis",
                "percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders",
                "percent_of_beneficiaries_identified_with_stroke", "average_HCC_risk_score_of_beneficiaries"]
-
+    # types = {'npi': np.int64, 'provider_last_name': 'S20', 'provider_first_name': 'S20',
+    #          'provider_middle_initial': 'S20', 'provider_credentials': 'S20',
+    #          'provider_gender': 'S20', 'provider_entity_type': 'S20', 'provider_street_address_1': 'S20',
+    #          'provider_street_address_2': 'S20',
+    #          'provider_city': 'S20', 'provider_zip_code': 'S20', 'provider_state_code': 'S20',
+    #          'provider_country_code': 'S20', 'provider_type': 'S20',
+    #          'medicare_participation_indicator': 'S20', 'number_of_HCPCS': np.int64, 'number_of_services': np.float64,
+    #          'number_of_medicare_beneficiaries': np.int64,
+    #          'total_submitted_charge_amount': np.float64, 'total_medicare_allowed_amount': np.float64,
+    #          'total_medicare_payment_amount': np.float64,
+    #          'total_medicare_standardized_payment_amount': np.float64, 'drug_suppress_indicator': 'S20',
+    #          'number_of_HCPCS_associated_with_drug_services': np.float64,
+    #          'number_of_drug_services': np.float64, 'number_of_medicare_beneficiaries_with_drug_services': np.float64,
+    #          'total_drug_submitted_charge_amount': np.float64,
+    #          'total_drug_medicare_allowed_amount': np.float64, 'total_drug_medicare_payment_amount': np.float64,
+    #          'total_drug_medicare_standardized_payment_amount': np.float64,
+    #          'medical_suppress_indicator': 'S20', 'number_of_HCPCS_associated_medical_services': np.float64,
+    #          'number_of_medical_services': np.float64,
+    #          'number_of_medicare_beneficiaries_with_medical_services': np.float64,
+    #          'total_medical_submitted_charge_amount': np.float64,
+    #          'total_medical_medicare_allowed_amount': np.float64, 'total_medical_medicare_payment_amount': np.float64,
+    #          'total_medical_medicare_standardized_payment_amount': np.float64,
+    #          'average_age_of_beneficiaries': np.int64, 'number_of_beneficiaries_age_less_65': np.float64,
+    #          'number_of_beneficiaries_age_65_to_74': np.float64,
+    #          'number_of_beneficiaries_age_75_to_84': np.float64, 'number_of_beneficiaries_age_greater_84': np.float64,
+    #          'number_of_female_beneficiaries': np.float64,
+    #          'number_of_male_beneficiaries': np.float64, 'number_of_non_hispanic_white_beneficiaries': np.float64,
+    #          'number_of_african_american_beneficiaries': np.float64,
+    #          'number_of_asian_pacific_islander_beneficiaries': np.float64,
+    #          'number_of_hispanic_beneficiaries': np.float64,
+    #          'number_of_american_indian_alaskan_native_beneficiaries': np.float64,
+    #          'number_of_beneficiaries_with_race_not_elsewhere_classified': np.float64,
+    #          'number_of_beneficiaries_with_medicare_only_entitlement': np.float64,
+    #          'number_of_beneficiaries_with_medicare_and_medicaid_entitlement': np.float64,
+    #          'percent_of_beneficiaries_identified_with_atrial_fibrillation': np.float64,
+    #          'percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia': np.float64,
+    #          'percent_of_beneficiaries_identified_with_asthma': np.float64,
+    #          'percent_of_beneficiaries_identified_with_cancer': np.float64,
+    #          'percent_of_beneficiaries_identified_with_heart_failure': np.float64,
+    #          'percent_of_beneficiaries_identified_with_chronic_kidney_disease': np.float64,
+    #          'percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease': np.float64,
+    #          'percent_of_beneficiaries_identified_with_depression': np.float64,
+    #          'percent_of_beneficiaries_identified_with_diabetes': np.float64,
+    #          'p-ercent_of_beneficiaries_identified_with_hyperlipidemia': np.float64,
+    #          'percent_of_beneficiaries_identified_with_hypertension': np.float64,
+    #          'percent_of_beneficiaries_identified_with_ischemic_heart_disease': np.float64,
+    #          'percent_of_beneficiaries_identified_with_osteoporosis': np.float64,
+    #          'percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis': np.float64,
+    #          'percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders': np.float64,
+    #          'percent_of_beneficiaries_identified_with_stroke': np.float64,
+    #          'average_HCC_risk_score_of_beneficiaries': np.float64}
+    types = [('npi', np.int64), ('provider_last_name', 'S20'), ('provider_first_name', 'S20'),
+             ('provider_middle_initial', 'S20'), ('provider_credentials', 'S20'),
+             ('provider_gender', 'S20'), ('provider_entity_type', 'S20'), ('provider_street_address_1', 'S20'),
+             ('provider_street_address_2', 'S20'),
+             ('provider_city', 'S20'), ('provider_zip_code', 'S20'), ('provider_state_code', 'S20'),
+             ('provider_country_code', 'S20'), ('provider_type', 'S20'),
+             ('medicare_participation_indicator', 'S20'), ('number_of_HCPCS', np.int64), ('number_of_services', np.float64),
+             ('number_of_medicare_beneficiaries', np.int64),
+             ('total_submitted_charge_amount', np.float64), ('total_medicare_allowed_amount', np.float64),
+             ('total_medicare_payment_amount', np.float64),
+             ('total_medicare_standardized_payment_amount', np.float64), ('drug_suppress_indicator', 'S20'),
+             ('number_of_HCPCS_associated_with_drug_services', np.float64),
+             ('number_of_drug_services', np.float64), ('number_of_medicare_beneficiaries_with_drug_services', np.float64),
+             ('total_drug_submitted_charge_amount', np.float64),
+             ('total_drug_medicare_allowed_amount', np.float64), ('total_drug_medicare_payment_amount', np.float64),
+             ('total_drug_medicare_standardized_payment_amount', np.float64),
+             ('medical_suppress_indicator', 'S20'), ('number_of_HCPCS_associated_medical_services', np.float64),
+             ('number_of_medical_services', np.float64),
+             ('number_of_medicare_beneficiaries_with_medical_services', np.float64),
+             ('total_medical_submitted_charge_amount', np.float64),
+             ('total_medical_medicare_allowed_amount', np.float64), ('total_medical_medicare_payment_amount', np.float64),
+             ('total_medical_medicare_standardized_payment_amount', np.float64),
+             ('average_age_of_beneficiaries', np.int64), ('number_of_beneficiaries_age_less_65', np.float64),
+             ('number_of_beneficiaries_age_65_to_74', np.float64),
+             ('number_of_beneficiaries_age_75_to_84', np.float64), ('number_of_beneficiaries_age_greater_84', np.float64),
+             ('number_of_female_beneficiaries', np.float64),
+             ('number_of_male_beneficiaries', np.float64), ('number_of_non_hispanic_white_beneficiaries', np.float64),
+             ('number_of_african_american_beneficiaries', np.float64),
+             ('number_of_asian_pacific_islander_beneficiaries', np.float64),
+             ('number_of_hispanic_beneficiaries', np.float64),
+             ('number_of_american_indian_alaskan_native_beneficiaries', np.float64),
+             ('number_of_beneficiaries_with_race_not_elsewhere_classified', np.float64),
+             ('number_of_beneficiaries_with_medicare_only_entitlement', np.float64),
+             ('number_of_beneficiaries_with_medicare_and_medicaid_entitlement', np.float64),
+             ('percent_of_beneficiaries_identified_with_atrial_fibrillation', np.float64),
+             ('percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia', np.float64),
+             ('percent_of_beneficiaries_identified_with_asthma', np.float64),
+             ('percent_of_beneficiaries_identified_with_cancer', np.float64),
+             ('percent_of_beneficiaries_identified_with_heart_failure', np.float64),
+             ('percent_of_beneficiaries_identified_with_chronic_kidney_disease', np.float64),
+             ('percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease', np.float64),
+             ('percent_of_beneficiaries_identified_with_depression', np.float64),
+             ('percent_of_beneficiaries_identified_with_diabetes', np.float64),
+             ('percent_of_beneficiaries_identified_with_hyperlipidemia', np.float64),
+             ('percent_of_beneficiaries_identified_with_hypertension', np.float64),
+             ('percent_of_beneficiaries_identified_with_ischemic_heart_disease', np.float64),
+             ('percent_of_beneficiaries_identified_with_osteoporosis', np.float64),
+             ('percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis', np.float64),
+             ('percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders', np.float64),
+             ('percent_of_beneficiaries_identified_with_stroke', np.float64),
+             ('average_HCC_risk_score_of_beneficiaries', np.float64)]
     df = pd.read_csv(os.path.join(get_path(),
                                     'Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'),
-                       sep=',', names=columns, header=0
-                       # na_values=[''],
-                       # dtype=data_type
+                       sep=',', names=columns, header=0, dtype=types
+                       # na_values=['']
                      )
-    return df
+
+    #filter for only US states -- Convert to Numpy array
+    state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+             'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
+             'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
+
+    terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP'] #USA territories
+    usa = state+terr
+    data=df.as_matrix()
+    US_data = np.array([row for row in data if row[12]=='US'])
+    for row in US_data:
+        if row[11] not in usa and len(str(row[10])) >=5:
+            location=pz.get(int(str(row[10])[:5]),'US')
+            if location != False:
+                row[10]=location['postal_code'] #correct ZIP code
+                row[11]=location['state_short'] #correct state code
+    state_data= np.array([row for row in US_data if row[11] in state])
+
+    #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
+    state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
+    #Convert to Pandas DataFrame
+    # state_df = pd.DataFrame(data=state_data, columns=columns)
+    # state_df = state_df.convert_objects(convert_numeric=True)
+
+    state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
+    return state_df
+
+# print readCSV()
 
 def create_table():
 
@@ -127,7 +255,7 @@ def query(path):
 # data = readCSV()
 # print data["provider_middle_initial"][1], data["provider_middle_initial"][1]
 # print get_path()
-# print create_table()
+print create_table()
 # print query(get_path())
 
 

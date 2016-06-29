@@ -110,46 +110,23 @@ def map():
             lst_state += [elem]
 
     dict_state=dict(lst_state)
-
-    # data_array = np.array(lst_state)
-    # state_abbrev = {
-    #     'AK': 'Alaska','AL': 'Alabama','AR': 'Arkansas','AZ': 'Arizona','CA': 'California','CO': 'Colorado','CT': 'Connecticut',
-    #     'DC': 'District of Columbia','DE': 'Delaware','FL': 'Florida','GA': 'Georgia','HI': 'Hawaii','IA': 'Iowa','ID': 'Idaho',
-    #     'IL': 'Illinois','IN': 'Indiana','KS': 'Kansas','KY': 'Kentucky','LA': 'Louisiana','MA': 'Massachusetts',
-    #     'MD': 'Maryland','ME': 'Maine','MI': 'Michigan','MN': 'Minnesota','MO': 'Missouri','MS': 'Mississippi','MT': 'Montana',
-    #     'NC': 'North Carolina','ND': 'North Dakota','NE': 'Nebraska','NH': 'New Hampshire','NJ': 'New Jersey','NM': 'New Mexico',
-    #     'NV': 'Nevada','NY': 'New York','OH': 'Ohio','OK': 'Oklahoma','OR': 'Oregon','PA': 'Pennsylvania','PR': 'Puerto Rico',
-    #     'RI': 'Rhode Island','SC': 'South Carolina','SD': 'South Dakota','TN': 'Tennessee','TX': 'Texas','UT': 'Utah','VA': 'Virginia',
-    #     'VT': 'Vermont','WA': 'Washington','WI': 'Wisconsin','WV': 'West Virginia', 'WY': 'Wyoming'}
-    # new_lst = []
-    # for elem in data_array:
-    #     if str(elem[0]) in state:
-    #         new_elem=[]
-    #         new_elem+=[state_abbrev[elem[0]]]
-    #         new_elem+=list(elem)
-    #         new_lst+=[new_elem]
-    # data=np.array(new_lst)
-    # data=data[np.argsort(data[:,0])]
-    #
-    # fips = ['US01','US02','US04','US05','US06','US08','US09','US10','US12','US13','US15','US16','US17', 'US18',
-    #         'US19','US20','US21','US22','US23','US24','US25','US26','US27','US28','US29','US30','US31','US32','US33','US34',
-    #         'US35','US36','US37','US38','US39','US40','US41','US42','US44','US45','US46','US47','US48','US49','US50','US51',
-    #         'US53','US54','US55','US56']
-    # data=np.column_stack((data,(np.array(fips))))
-    # # print data_array[1].reshape(1, -1)
-    # # data = pd.DataFrame(data_array[1].reshape(1,-1), columns=data_array[0], dtype=np.uint64)
-    # df=pd.DataFrame(data, columns=['State', 'Code', 'Prevalence', 'fips'])
-    #
-    # map_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'tmp', 'state_map.csv') #save new CSV file at bar_path
-    # df.to_csv(map_path, index=False) #DataFrame to CSV file in static/tmp
     return render_template("map.html", d_state=dict_state, js_file=url_for('static',
                                                                            filename='js/datamaps.usa.min.js'))
-    # return render_template('map.html', d_file=url_for('static',
-    #                                                   filename='tmp/state_map.csv'))
 
 
 @app.route('/data')
 def data():
+
+    db_file = get_db()
+    conn = sqlite3.connect(db_file)  # create/open database
+    conn.row_factory=sqlite3.Row
+
+    # with conn:
+    #     c = conn.cursor()
+    #
+    #     c.execute('''SELECT * FROM report''')
+    #     rows = c.fetchall()
+
     columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
                "provider_gender", "provider_entity_type", "provider_street_address_1", "provider_street_address_2",
                "provider_city",
@@ -196,18 +173,14 @@ def data():
                "percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders",
                "percent_of_beneficiaries_identified_with_stroke",
                "average_HCC_risk_score_of_beneficiaries"]
-    d_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'dataset')
-    df = pd.read_csv(os.path.join(d_path,
-                                    'Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'),
-                       sep=',', names=columns)
-    # iter_df = df.iterrows()
-    # for index, row in iter_df:
-    #     print row['npi']
-    data = df.head().as_matrix()[1:].astype(str)
+
+    df=pd.read_sql('SELECT * FROM report;', conn, columns=columns)
+    data = df.head().as_matrix().astype(str)
     return render_template("data.html", data=data)
     # df = df.head() #head - dataframe
     # data = json.loads(df.to_json()) #exports data frame as json string --> load/parsed json into python object (dict or lsit)
     # return jsonify(data)
 
+# print data()
 
 ##main

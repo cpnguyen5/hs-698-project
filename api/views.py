@@ -1,4 +1,4 @@
-from api import app
+from api import app, models
 from flask import render_template, url_for, jsonify
 import os
 import project
@@ -6,13 +6,13 @@ import sqlite3
 import numpy as np
 import pandas as pd
 import json
-from flask import jsonify
 
 
 def get_db():
-    db_path=os.path.join(project.get_path(),'cms.db')
+    db_path=os.path.join(project.get_path(),'cms3.db')
     if not os.path.isfile(db_path):
-        project.create_table()
+        # project.create_table()
+        project.init_db()
     return db_path
 
 
@@ -181,6 +181,5 @@ def data():
     # data = json.loads(df.to_json()) #exports data frame as json string --> load/parsed json into python object (dict or lsit)
     # return jsonify(data)
 
-# print data()
 
 ##main

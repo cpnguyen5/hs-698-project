@@ -1,15 +1,12 @@
 import sqlite3
-import os, sys
+import os
 import pandas as pd
 import numpy as np
-import csv
 from pyzipcode import Pyzipcode as pz
-import sqlalchemy
 from sqlalchemy import Column, ForeignKey, Integer, String, Float, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker, scoped_session
-
-
+from api import db
 
 
 
@@ -333,53 +330,60 @@ class Report(Base):
     percent_of_beneficiaries_identified_with_stroke = Column(Integer, nullable=True)
     average_HCC_risk_score_of_beneficiaries = Column(Float, nullable=True)
 
-    #Create engine to store data in local directory's db file
 
 
 def init_db():
 
-    #Create engine
-    db_path=os.path.join(get_path(), 'cms2.db')
-    engine=create_engine('sqlite:///%s' % (db_path))
-    #Remove spontaneous quoting of column name
-    engine.dialect.identifier_preparer.initial_quote = ''
-    engine.dialect.identifier_preparer.final_quote = ''
+    # #Create engine to store data in local directory's db file
+    db_path=os.path.join(get_path(), 'cms3.db')
+    engine = db.engine # sqlalchemy lib -- engine=create_engine('sqlite:///%s' % (db_path))
+    db_is_new = not os.path.exists(db_path)
+    if db_is_new:
+        print "Database created, creating table(s) schema"
+        #Remove spontaneous quoting of column name
+        db.engine.dialect.identifier_preparer.initial_quote = ''
+        db.engine.dialect.identifier_preparer.final_quote = ''
 
-    #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
-    Base.metadata.create_all(bind=engine)
-    return engine
+        #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
+        db.create_all() # sqlalchemy lib -- Base.metadata.create_all(bind=engine)
+
+        #Insert Data
+        #Individual Insert
+        # db.session.add(Report(npi=110, provider_state_code='AZ'))
+        # db.session.commit()
+
+        # Bulk insert of DataFrame
+        df = readCSV()
+        df_lst = df.to_dict(orient='records')  # orient by records to align format
+        db.session.execute(Report.__table__.insert(), df_lst)
+        db.session.commit() #Commit
+
+        # metadata = sqlalchemy.schema.MetaData(bind=engine, reflect=True)
+        # table = sqlalchemy.Table('report', metadata, autoload=True)
+        #
+        # session.execute(table.insert(), df_lst)
+        #
+        # session.commit()  # commit changes
+        # session.close()  # close session
+    else:
+        print "Database exists; opened successfully"
+    return
 
 
-def insert_db():
-    engine = init_db()
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    #Individual insert
-    # session.add(Report(npi=110, provider_state_code='CA'))
-    # session.commit()
+# def insert_db():
+#     engine = init_db()
 
-    #Bulk insert of DataFrame
-    df = readCSV()
-    df_lst = df.to_dict(orient='records') # orient by records to align format
-
-    metadata=sqlalchemy.schema.MetaData(bind=engine, reflect=True)
-    table=sqlalchemy.Table('report', metadata, autoload=True)
-
-    session.execute(table.insert(), df_lst)
-
-    session.commit() #commit changes
-    session.close() #close session
 
 
 #main
-data = readCSV()
+# data = readCSV()
 # print data.to_dict(orient='records')[0]
 # print data["provider_middle_initial"][1], data["provider_middle_initial"][1]
 # print get_path()
 # print create_table()
 # print query(get_path())
 
-insert_db()
+init_db()
 
 # print data.isnull().sum()
 # print data.dropna()

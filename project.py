@@ -1,9 +1,16 @@
 import sqlite3
-import os
+import os, sys
 import pandas as pd
 import numpy as np
 import csv
 from pyzipcode import Pyzipcode as pz
+import sqlalchemy
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker, scoped_session
+
+
+
 
 
 def get_path():
@@ -144,9 +151,7 @@ def readCSV():
              ('average_HCC_risk_score_of_beneficiaries', np.float64)]
     df = pd.read_csv(os.path.join(get_path(),
                                     'Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'),
-                       sep=',', names=columns, header=0, dtype=types
-                       # na_values=['']
-                     )
+                       sep=',', names=columns, header=0, dtype=types)
 
     #filter for only US states -- Convert to Numpy array
     state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
@@ -172,9 +177,9 @@ def readCSV():
     # state_df = state_df.convert_objects(convert_numeric=True)
 
     state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
+    state_df = state_df.replace(to_replace='', value=np.nan)
     return state_df
 
-# print readCSV()
 
 def create_table():
 
@@ -250,14 +255,131 @@ def query(path):
     # return rows
     return query_lst
 
+Base = declarative_base()
+session=scoped_session(sessionmaker())
+
+
+class Report(Base):
+    __tablename__ = "report"
+
+    npi = Column(Integer, primary_key=True)
+    provider_last_name = Column(String(50), nullable=True)
+    provider_first_name = Column(String(50), nullable=True)
+    provider_middle_initial = Column(String(50), nullable=True)
+    provider_credentials = Column(String(50), nullable=True)
+    provider_gender = Column(String(50), nullable=True)
+    provider_entity_type = Column(String(50), nullable=True)
+    provider_street_address_1 = Column(String(50), nullable=True)
+    provider_street_address_2 = Column(String(50), nullable=True)
+    provider_city = Column(String(50), nullable=True)
+    provider_zip_code = Column(Integer, nullable=True)
+    provider_state_code = Column(String(50), nullable=True)
+    provider_country_code = Column(String(50), nullable=True)
+    provider_type = Column(String(50), nullable=True)
+    medicare_participation_indicator = Column(String(50), nullable=True)
+    number_of_HCPCS = Column(Integer, nullable=True)
+    number_of_services = Column(Integer, nullable=True)
+    number_of_medicare_beneficiaries = Column(Integer, nullable=True)
+    total_submitted_charge_amount = Column(Float, nullable=True)
+    total_medicare_allowed_amount = Column(Float, nullable=True)
+    total_medicare_payment_amount = Column(Float, nullable=True)
+    total_medicare_standardized_payment_amount = Column(Float, nullable=True)
+    drug_suppress_indicator = Column(String(50), nullable=True)
+    number_of_HCPCS_associated_with_drug_services = Column(Integer, nullable=True)
+    number_of_drug_services = Column(Integer, nullable=True)
+    number_of_medicare_beneficiaries_with_drug_services = Column(Integer, nullable=True)
+    total_drug_submitted_charge_amount = Column(Float, nullable=True)
+    total_drug_medicare_allowed_amount = Column(Float, nullable=True)
+    total_drug_medicare_payment_amount = Column(Float, nullable=True)
+    total_drug_medicare_standardized_payment_amount = Column(Float, nullable=True)
+    medical_suppress_indicator = Column(String(50), nullable=True)
+    number_of_HCPCS_associated_medical_services = Column(Integer, nullable=True)
+    number_of_medical_services = Column(Integer, nullable=True)
+    number_of_medicare_beneficiaries_with_medical_services = Column(Integer, nullable=True)
+    total_medical_submitted_charge_amount = Column(Float, nullable=True)
+    total_medical_medicare_allowed_amount = Column(Float, nullable=True)
+    total_medical_medicare_payment_amount = Column(Float, nullable=True)
+    total_medical_medicare_standardized_payment_amount = Column(Float, nullable=True)
+    average_age_of_beneficiaries = Column(Integer, nullable=True)
+    number_of_beneficiaries_age_less_65 = Column(Integer, nullable=True)
+    number_of_beneficiaries_age_65_to_74 = Column(Integer, nullable=True)
+    number_of_beneficiaries_age_75_to_84 = Column(Integer, nullable=True)
+    number_of_beneficiaries_age_greater_84 = Column(Integer, nullable=True)
+    number_of_female_beneficiaries = Column(Integer, nullable=True)
+    number_of_male_beneficiaries = Column(Integer, nullable=True)
+    number_of_non_hispanic_white_beneficiaries = Column(Integer, nullable=True)
+    number_of_african_american_beneficiaries = Column(Integer, nullable=True)
+    number_of_asian_pacific_islander_beneficiaries = Column(Integer, nullable=True)
+    number_of_hispanic_beneficiaries = Column(Integer, nullable=True)
+    number_of_american_indian_alaskan_native_beneficiaries = Column(Integer, nullable=True)
+    number_of_beneficiaries_with_race_not_elsewhere_classified = Column(Integer, nullable=True)
+    number_of_beneficiaries_with_medicare_only_entitlement = Column(Integer, nullable=True)
+    number_of_beneficiaries_with_medicare_and_medicaid_entitlement = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_atrial_fibrillation = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_asthma = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_cancer = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_heart_failure = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_chronic_kidney_disease = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_depression = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_diabetes = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_hyperlipidemia = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_hypertension = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_ischemic_heart_disease = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_osteoporosis = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders = Column(Integer, nullable=True)
+    percent_of_beneficiaries_identified_with_stroke = Column(Integer, nullable=True)
+    average_HCC_risk_score_of_beneficiaries = Column(Float, nullable=True)
+
+    #Create engine to store data in local directory's db file
+
+
+def init_db():
+
+    #Create engine
+    db_path=os.path.join(get_path(), 'cms2.db')
+    engine=create_engine('sqlite:///%s' % (db_path))
+    #Remove spontaneous quoting of column name
+    engine.dialect.identifier_preparer.initial_quote = ''
+    engine.dialect.identifier_preparer.final_quote = ''
+
+    #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
+    Base.metadata.create_all(bind=engine)
+    return engine
+
+
+def insert_db():
+    engine = init_db()
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    #Individual insert
+    # session.add(Report(npi=110, provider_state_code='CA'))
+    # session.commit()
+
+    #Bulk insert of DataFrame
+    df = readCSV()
+    df_lst = df.to_dict(orient='records') # orient by records to align format
+
+    metadata=sqlalchemy.schema.MetaData(bind=engine, reflect=True)
+    table=sqlalchemy.Table('report', metadata, autoload=True)
+
+    session.execute(table.insert(), df_lst)
+
+    session.commit() #commit changes
+    session.close() #close session
+
 
 #main
-# data = readCSV()
+data = readCSV()
+# print data.to_dict(orient='records')[0]
 # print data["provider_middle_initial"][1], data["provider_middle_initial"][1]
 # print get_path()
-print create_table()
+# print create_table()
 # print query(get_path())
 
+insert_db()
 
 # print data.isnull().sum()
 # print data.dropna()

@@ -1,4 +1,4 @@
-from api import app, models
+from api import app
 from flask import render_template, url_for, jsonify
 import os
 import project
@@ -9,6 +9,15 @@ import json
 from .models import Report
 from api import db
 from sqlalchemy import func
+
+
+def get_abs_path():
+    """
+    This function takes no parameters and returns the api root directory pathway.
+    :return: api directory pathway
+    """
+    return os.path.abspath(os.path.dirname(__file__))
+
 
 def get_db():
     db_path=os.path.join(project.get_path(),'cms3.db')
@@ -129,6 +138,55 @@ def map():
     return render_template("map.html", d_state=dict_state, js_file=url_for('static',
                                                                            filename='js/datamaps.usa.min.js'))
 
+@app.route('/cost')
+def cost():
+
+    rows = db.session.query(Report.provider_state_code, func.avg(Report.total_medicare_standardized_payment_amount)).\
+        filter(Report.provider_state_code != 'DC').order_by(Report.provider_state_code).group_by(Report.provider_state_code).all()
+
+    state_lst=[]
+    for i in range(len(rows)):
+        state = tuple()
+        state += (rows[i][0],)
+        state += (round(rows[i][1],2),)
+        state_lst+=[state]
+    state_cost=pd.DataFrame(state_lst, dtype=int)
+    csv_path = os.path.join(get_abs_path(), 'static', 'tmp', 'state_cost.csv')
+    state_cost.to_csv(csv_path, index=False, header= ["name","value"])
+    return render_template("state_cost.html", data_file = url_for('static',
+                                                                  filename='tmp/state_cost.csv'))
+
+@app.route('/cost/top')
+def top_cost():
+
+    rows = db.session.query(Report.provider_state_code, func.avg(Report.total_medicare_standardized_payment_amount),
+                            func.avg(Report.number_of_beneficiaries_age_less_65),
+                            func.avg(Report.number_of_beneficiaries_age_65_to_74),
+                            func.avg(Report.number_of_beneficiaries_age_75_to_84),
+                            func.avg(Report.number_of_beneficiaries_age_greater_84)).\
+        filter(Report.provider_state_code != 'DC').order_by(func.avg(Report.total_medicare_standardized_payment_amount).desc()).\
+        group_by(Report.provider_state_code).limit(5).all()
+
+    data = []
+    for row in rows:
+        data_dict = {}
+        data_dict['State']=str(row[0])
+        freq={}
+        freq['total_payment_amt']=round(row[1], 2)
+        freq['less_65']=int(row[2])
+        freq['65_to_74']=int(row[3])
+        freq['75_to_84']=int(row[4])
+        freq['85_greater']=int(row[5])
+        data_dict['freq']=freq
+        data+=[data_dict]
+
+    mock=[{'State':'CA','freq':{'low':4786, 'mid':1319, 'high':249}},{'State':'AZ','freq':{'low':1101, 'mid':412, 'high':674}},
+          {'State':'CT','freq':{'low':932, 'mid':2149, 'high':418}},{'State':'DE','freq':{'low':832, 'mid':1152, 'high':1862}},
+          {'State':'FL','freq':{'low':4481, 'mid':3304, 'high':948}},{'State':'GA','freq':{'low':1619, 'mid':167, 'high':1063}},
+          {'State':'IA','freq':{'low':1819, 'mid':247, 'high':1203}},{'State':'IL','freq':{'low':4498, 'mid':3852, 'high':942}},
+          {'State':'IN','freq':{'low':797, 'mid':1849, 'high':1534}},{'State':'KS','freq':{'low':162, 'mid':379, 'high':471}}]
+    return render_template("cost.html", mock=mock)
+
 
 @app.route('/data')
 def data():
@@ -199,4 +257,3 @@ def data():
 
 
 ##main
-# state()

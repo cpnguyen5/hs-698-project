@@ -7,7 +7,8 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Float, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker, scoped_session
 from api import db
-
+from api.models import Report, Puf, Cancer
+import urllib
 
 
 def get_path():
@@ -148,7 +149,7 @@ def readCSV():
              ('average_HCC_risk_score_of_beneficiaries', np.float64)]
     df = pd.read_csv(os.path.join(get_path(),
                                     'Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'),
-                       sep=',', names=columns, header=0, dtype=types)
+                       sep=',', names=columns, header=0, dtype=types, na_values='')
 
     #filter for only US states -- Convert to Numpy array
     state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
@@ -176,6 +177,63 @@ def readCSV():
     state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
     state_df = state_df.replace(to_replace='', value=np.nan)
     return state_df
+
+
+def readPUF():
+    columns = ['npi', 'provider_last_name', 'provider_first_name', 'provider_middle_initial','provider_credentials',
+               'provider_gender', 'provider_entity_type', 'provider_street_address_1', 'provider_street_address_2',
+               'provider_city', 'provider_zip_code', 'provider_state_code', 'provider_country_code', 'provider_type',
+               'medicare_participation_indicator', 'place_of_service', 'HCPCS_code', 'HCPCS_description',
+               'identifies_HCPCS_as_drug_included_in_the_ASP_drug_list', 'number_of_services',
+               'number_of_medicare_beneficiaries', 'number_of_distinct_medicare_beneficiary_per_day_services',
+               'average_medicare_allowed_amount', 'average_submitted_charge_amount', 'average_medicare_payment_amount',
+               'average_medicare_standardized_amount']
+
+    types = [('npi', np.uint64), ('provider_last_name', 'S20'), ('provider_first_name', 'S20'), ('provider_middle_initial', 'S20'),
+             ('provider_credentials', 'S20'),('provider_gender', 'S20'),('provider_entity_type', 'S20'),
+             ('provider_street_address_1', 'S20'),('provider_street_address_2', 'S20'),('provider_city', 'S20'),
+             ('provider_zip_code', 'S20'),('provider_state_code', 'S20'),('provider_country_code', 'S20'),
+             ('provider_type', 'S20'),('medicare_participation_indicator', 'S20'),('place_of_service', 'S20'),
+             ('HCPCS_code', 'S20'),('HCPCS_description', 'S20'),('identifies_HCPCS_as_drug_included_in_the_ASP_drug_list', 'S20'),
+             ('number_of_services', np.float64),('number_of_medicare_beneficiaries', np.float64),
+             ('number_of_distinct_medicare_beneficiary_per_day_services', np.float64),
+             ('average_medicare_allowed_amount', np.float64),('average_submitted_charge_amount', np.float64),
+             ('average_medicare_payment_amount', np.float64),('average_medicare_standardized_amount', np.float64)]
+    df = pd.read_csv(os.path.join(get_path(),
+                                  'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv'),
+                     sep=',', names=columns, header=0, na_values='')
+                     # , dtype=types)
+    # filter for only US states -- Convert to Numpy array
+    state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+             'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
+             'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
+
+    terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP']  # USA territories
+    usa = state + terr
+    data = df.as_matrix()
+    US_data = np.array([row for row in data if row[12] == 'US'])
+    for row in US_data:
+        if row[11] not in usa and len(str(row[10])) >= 5:
+            location = pz.get(int(str(row[10])[:5]), 'US')
+            if location != False:
+                row[10] = location['postal_code']  # correct ZIP code
+                row[11] = location['state_short']  # correct state code
+    state_data = np.array([row for row in US_data if row[11] in state])
+
+    # Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
+    state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
+    # Convert to Pandas DataFrame
+    state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
+    # state_df = state_df.replace(to_replace='', value=np.nan)
+    return state_df
+
+
+def readBCH():
+    columns = ['indicator', 'year', 'gender', 'race', 'value', 'place']
+    # type = [('indicator', 'S10'), ('year', np.uint64), ('gender', 'S10'), ('race', 'S10'), ('value', np.float64), ('place'. 'S50')]
+    df = pd.read_csv(os.path.join(get_path(), 'cancer_state.csv'), sep=',', names=columns, header=0, na_values='')
+    df['place']=df['place'].apply(lambda x: x[-2:]) #filter for only state code
+    return df
 
 
 def create_table():
@@ -252,85 +310,6 @@ def query(path):
     # return rows
     return query_lst
 
-Base = declarative_base()
-session=scoped_session(sessionmaker())
-
-
-class Report(Base):
-    __tablename__ = "report"
-
-    npi = Column(Integer, primary_key=True)
-    provider_last_name = Column(String(50), nullable=True)
-    provider_first_name = Column(String(50), nullable=True)
-    provider_middle_initial = Column(String(50), nullable=True)
-    provider_credentials = Column(String(50), nullable=True)
-    provider_gender = Column(String(50), nullable=True)
-    provider_entity_type = Column(String(50), nullable=True)
-    provider_street_address_1 = Column(String(50), nullable=True)
-    provider_street_address_2 = Column(String(50), nullable=True)
-    provider_city = Column(String(50), nullable=True)
-    provider_zip_code = Column(Integer, nullable=True)
-    provider_state_code = Column(String(50), nullable=True)
-    provider_country_code = Column(String(50), nullable=True)
-    provider_type = Column(String(50), nullable=True)
-    medicare_participation_indicator = Column(String(50), nullable=True)
-    number_of_HCPCS = Column(Integer, nullable=True)
-    number_of_services = Column(Integer, nullable=True)
-    number_of_medicare_beneficiaries = Column(Integer, nullable=True)
-    total_submitted_charge_amount = Column(Float, nullable=True)
-    total_medicare_allowed_amount = Column(Float, nullable=True)
-    total_medicare_payment_amount = Column(Float, nullable=True)
-    total_medicare_standardized_payment_amount = Column(Float, nullable=True)
-    drug_suppress_indicator = Column(String(50), nullable=True)
-    number_of_HCPCS_associated_with_drug_services = Column(Integer, nullable=True)
-    number_of_drug_services = Column(Integer, nullable=True)
-    number_of_medicare_beneficiaries_with_drug_services = Column(Integer, nullable=True)
-    total_drug_submitted_charge_amount = Column(Float, nullable=True)
-    total_drug_medicare_allowed_amount = Column(Float, nullable=True)
-    total_drug_medicare_payment_amount = Column(Float, nullable=True)
-    total_drug_medicare_standardized_payment_amount = Column(Float, nullable=True)
-    medical_suppress_indicator = Column(String(50), nullable=True)
-    number_of_HCPCS_associated_medical_services = Column(Integer, nullable=True)
-    number_of_medical_services = Column(Integer, nullable=True)
-    number_of_medicare_beneficiaries_with_medical_services = Column(Integer, nullable=True)
-    total_medical_submitted_charge_amount = Column(Float, nullable=True)
-    total_medical_medicare_allowed_amount = Column(Float, nullable=True)
-    total_medical_medicare_payment_amount = Column(Float, nullable=True)
-    total_medical_medicare_standardized_payment_amount = Column(Float, nullable=True)
-    average_age_of_beneficiaries = Column(Integer, nullable=True)
-    number_of_beneficiaries_age_less_65 = Column(Integer, nullable=True)
-    number_of_beneficiaries_age_65_to_74 = Column(Integer, nullable=True)
-    number_of_beneficiaries_age_75_to_84 = Column(Integer, nullable=True)
-    number_of_beneficiaries_age_greater_84 = Column(Integer, nullable=True)
-    number_of_female_beneficiaries = Column(Integer, nullable=True)
-    number_of_male_beneficiaries = Column(Integer, nullable=True)
-    number_of_non_hispanic_white_beneficiaries = Column(Integer, nullable=True)
-    number_of_african_american_beneficiaries = Column(Integer, nullable=True)
-    number_of_asian_pacific_islander_beneficiaries = Column(Integer, nullable=True)
-    number_of_hispanic_beneficiaries = Column(Integer, nullable=True)
-    number_of_american_indian_alaskan_native_beneficiaries = Column(Integer, nullable=True)
-    number_of_beneficiaries_with_race_not_elsewhere_classified = Column(Integer, nullable=True)
-    number_of_beneficiaries_with_medicare_only_entitlement = Column(Integer, nullable=True)
-    number_of_beneficiaries_with_medicare_and_medicaid_entitlement = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_atrial_fibrillation = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_asthma = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_cancer = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_heart_failure = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_chronic_kidney_disease = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_depression = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_diabetes = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_hyperlipidemia = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_hypertension = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_ischemic_heart_disease = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_osteoporosis = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders = Column(Integer, nullable=True)
-    percent_of_beneficiaries_identified_with_stroke = Column(Integer, nullable=True)
-    average_HCC_risk_score_of_beneficiaries = Column(Float, nullable=True)
-
-
 
 def init_db():
 
@@ -353,18 +332,18 @@ def init_db():
         # db.session.commit()
 
         # Bulk insert of DataFrame
-        df = readCSV()
-        df_lst = df.to_dict(orient='records')  # orient by records to align format
-        db.session.execute(Report.__table__.insert(), df_lst)
+        df_report = readCSV()
+        report_lst = df_report.to_dict(orient='records')  # orient by records to align format
+        db.session.execute(Report.__table__.insert(), report_lst)
+        # df_puf = readPUF()
+        # puf_lst = df_puf.to_dict(orient='records')
+        # db.session.execute(Puf.__table__.insert(), puf_lst)
+        df_can = readBCH()
+        can_lst = df_can.to_dict(orient='records')
+        db.session.execute(Cancer.__table__.insert(), can_lst)
         db.session.commit() #Commit
+        db.session.close() #close session
 
-        # metadata = sqlalchemy.schema.MetaData(bind=engine, reflect=True)
-        # table = sqlalchemy.Table('report', metadata, autoload=True)
-        #
-        # session.execute(table.insert(), df_lst)
-        #
-        # session.commit()  # commit changes
-        # session.close()  # close session
     else:
         print "Database exists; opened successfully"
     return
@@ -374,16 +353,24 @@ def init_db():
 #     engine = init_db()
 
 
+def download():
+    file = os.path.split('https://drive.google.com/open?id=0B8umucjnm9I_SmpnZEpKYnpiYzQ')[1]
+    path = get_path()
+    f_path=os.path.join(get_path(), 'que.sql')
+    urllib.urlretrieve('http://example.com/file.ext', f_path)
+    return "File Downloaded"
 
 #main
-# data = readCSV()
+# data = readCSV().info()
+# print readPUF()
 # print data.to_dict(orient='records')[0]
 # print data["provider_middle_initial"][1], data["provider_middle_initial"][1]
 # print get_path()
 # print create_table()
 # print query(get_path())
 
-init_db()
+# init_db()
+download()
 
 # print data.isnull().sum()
 # print data.dropna()

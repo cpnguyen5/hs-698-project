@@ -1,3 +1,4 @@
+from api import app
 from api import db
 
 
@@ -74,4 +75,48 @@ class Report(db.Model):
     percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders = db.Column(db.Integer, nullable=True)
     percent_of_beneficiaries_identified_with_stroke = db.Column(db.Integer, nullable=True)
     average_HCC_risk_score_of_beneficiaries = db.Column(db.Float, nullable=True)
+    puf = db.relationship('puf', backref='report')
 
+
+class Puf(db.Model):
+    __tablename__ = "puf"
+
+    npi = db.Column(db.Integer, primary_key=True)
+    provider_last_name = db.Column(db.String(50), nullable=True)
+    provider_first_name = db.Column(db.String(50), nullable=True)
+    provider_middle_initial = db.Column(db.String(50), nullable=True)
+    provider_credentials = db.Column(db.String(50), nullable=True)
+    provider_gender = db.Column(db.String(50), nullable=True)
+    provider_entity_type = db.Column(db.String(50), nullable=True)
+    provider_street_address_1 = db.Column(db.String(50), nullable=True)
+    provider_street_address_2 = db.Column(db.String(50), nullable=True)
+    provider_city = db.Column(db.String(50), nullable=True)
+    provider_zip_code = db.Column(db.Integer, nullable=True)
+    provider_state_code = db.Column(db.String(50), nullable=True)
+    provider_country_code = db.Column(db.String(50), nullable=True)
+    provider_type = db.Column(db.String(50), nullable=True)
+    medicare_participation_indicator = db.Column(db.String(50), nullable=True)
+    place_of_service = db.Column(db.String(50), nullable=True)
+    HCPCS_code = db.Column(db.String(50), nullable=True)
+    HCPCS_description = db.Column(db.String(50), nullable=True)
+    identifies_HCPCS_as_drug_included_in_the_ASP_drug_list = db.Column(db.String(50), nullable=True)
+    number_of_services = db.Column(db.Integer, nullable=True)
+    number_of_medicare_beneficiaries = db.Column(db.Integer, nullable=True)
+    number_of_distinct_medicare_beneficiary_per_day_services = db.Column(db.Integer, nullable=True)
+    average_medicare_allowed_amount = db.Column(db.Float, nullable=True)
+    average_submitted_charge_amount = db.Column(db.Float, nullable=True)
+    average_medicare_payment_amount = db.Column(db.Float, nullable=True)
+    average_medicare_standardized_amount = db.Column(db.Float, nullable=True)
+    report_npi = db.Column(db.Integer, db.ForeignKey('report.npi'))
+
+
+class Cancer(db.Model):
+    __tablename__ = "cancer"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    indicator = db.Column(db.String(10), nullable=True)
+    year = db.Column(db.Integer, nullable=True)
+    gender = db.Column(db.String(10), nullable=True)
+    race = db.Column(db.String(20), nullable=True)
+    value = db.Column(db.Float, nullable=True)
+    place = db.Column(db.String(50), nullable=True)

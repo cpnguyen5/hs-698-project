@@ -355,7 +355,6 @@ def init_db():
 
 def download():
     file = os.path.split('https://drive.google.com/open?id=0B8umucjnm9I_SmpnZEpKYnpiYzQ')[1]
-    path = get_path()
     f_path=os.path.join(get_path(), 'que.sql')
     urllib.urlretrieve('http://example.com/file.ext', f_path)
     return "File Downloaded"

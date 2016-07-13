@@ -42,43 +42,6 @@ def state():
         state_tup += (elem[0],)
         state_tup += (round(elem[1],2),)
         state_avg += [state_tup]
-    # db_file = get_db()
-    # conn = sqlite3.connect(db_file)  # create/open database
-    # conn.row_factory=sqlite3.Row
-    #
-    # with conn:
-    #     c = conn.cursor()
-    #
-    #     c.execute('''SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer
-    #     FROM report
-    #
-    #     ORDER BY provider_state_code;''')
-    #     # GROUP BY provider_state_code
-    #     rows = c.fetchall()
-    #
-    # states_dict={}
-    # for row in rows:
-    #     # print row["provider_state_code"]
-    #     key = str(row[0])
-    #     if row[1] != None and isinstance(row[1], int):
-    #         if states_dict.has_key(key):
-    #             states_dict[key]+=[row[1]]
-    #         else:
-    #             states_dict[str(key)]=[row[1]]
-    #     else:
-    #         pass
-    #
-    # # for elem in states_dict.items():
-    # #     print elem
-    # dict = sorted(states_dict.items())
-    # for i, value in enumerate(dict):
-    #     temp=list(dict[i])
-    #     temp[1]=(sum(dict[i][1])) / (len(dict[i][1]))
-    #     dict[i]=tuple(temp)
-    #     # print dict[i]
-    # # for i in range(len(dict)):
-    # #     print dict[i][0], sum(dict[i][1])
-    #     # dict[i][1]=sum(dict[i][1])
     return render_template("state.html", rows=state_avg)
 
 
@@ -95,50 +58,6 @@ def map():
         state += (round(rows[i][1],2),)
         state_lst+=[state]
     dict_state = dict(state_lst)
-
-    # db_file = get_db()
-    # conn = sqlite3.connect(db_file)  # create/open database
-    # conn.row_factory = sqlite3.Row
-    # #
-    # with conn:
-    #     c = conn.cursor()
-    #     #
-    #     c.execute('''SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer
-    #      FROM report
-    #
-    #      ORDER BY provider_state_code;''')
-    #     # GROUP BY provider_state_code
-    #     rows = c.fetchall()
-
-    # #Create dictionary with state-value pairs -- values are list of values
-    # states_dict = {}
-    # for row in rows:
-    #     # print row["provider_state_code"]
-    #     key = str(row[0])
-    #     if row[1] != None and isinstance(row[1], int):
-    #         if states_dict.has_key(key):
-    #             states_dict[key] += [row[1]]
-    #         else:
-    #             states_dict[str(key)] = [row[1]]
-    #     else:
-    #         pass
-
-    # #Obtain list of tuples with key-value pairs of state-average prevalence
-    # lst_pair = sorted(states_dict.items())
-    # for i, value in enumerate(lst_pair):
-    #     temp = list(lst_pair[i])
-    #     temp[1] = (sum(lst_pair[i][1])) / (len(lst_pair[i][1]))
-    #     lst_pair[i] = tuple(temp)
-    #
-    # state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
-    #          'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
-    #          'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-    # #filter list for actual states
-    # lst_state = []
-    # for elem in lst_pair:
-    #     if str(elem[0]) in state:
-    #         lst_state += [elem]
-    # dict_state=dict(lst_state)
     return render_template("map.html", d_state=dict_state, js_file=url_for('static',
                                                                            filename='js/datamaps.usa.min.js'))
 

@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+    <head>
+        <title>Beneficiaries' Percentage of Cancer</title>
+    </head>
+    {% extends "base.html" %}
+    {% block content %}
+    <body>
+    <h2 align="center">CMS -- Cost Breakdown of Top 5 States</h2>
+    </body>
 <style>
 body{
     width:1060px;
@@ -7,8 +15,8 @@ body{
 }
 path {  stroke: #fff; }
 path:hover {  opacity:0.9; }
-rect:hover {  fill:blue; }
-.axis {  font: 10px sans-serif; }
+rect:hover {  fill:grey; }
+.axis {  font: 20px sans-serif; }
 .legend tr{    border-bottom:1px solid grey; }
 .legend tr:first-child{    border-top:1px solid grey; }
 
@@ -249,3 +257,4 @@ var freqData=
 
 dashboard('#dashboard', freqData);
 </script>
+    {% endblock %}

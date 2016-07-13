@@ -36,8 +36,12 @@ def state():
 
     rows = db.session.query(Report.provider_state_code, func.avg(Report.percent_of_beneficiaries_identified_with_cancer)).\
         order_by(Report.provider_state_code).group_by(Report.provider_state_code).all()
-    state = rows
-
+    state_avg = []
+    for elem in rows:
+        state_tup = tuple()
+        state_tup += (elem[0],)
+        state_tup += (round(elem[1],2),)
+        state_avg += [state_tup]
     # db_file = get_db()
     # conn = sqlite3.connect(db_file)  # create/open database
     # conn.row_factory=sqlite3.Row
@@ -75,7 +79,7 @@ def state():
     # # for i in range(len(dict)):
     # #     print dict[i][0], sum(dict[i][1])
     #     # dict[i][1]=sum(dict[i][1])
-    return render_template("state.html", rows=state)
+    return render_template("state.html", rows=state_avg)
 
 
 @app.route('/map')
@@ -169,18 +173,22 @@ def top_cost():
         group_by(Report.provider_state_code).limit(5).all()
 
     data = []
+    json_state=[]
     for row in rows:
         state_sum=np.sum(row[2:])
         state_cost=tuple()
         state_cost+=(row[0],) #state
-        print row[0]
         state_cost+=(round(row[1], 2),) #total payment amount
         state_cost+=( int(((float(row[2])) / state_sum) * row[1]),) #<65
         state_cost+=( int(((float(row[3])) / state_sum) * row[1]),) #65 to 74
         state_cost+=( int(((float(row[4])) / state_sum) * row[1]),) #75 to 84
         state_cost+=( int(((float(row[5])) / state_sum) * row[1]),) #>85
         data+=[state_cost]
-    return render_template("cost.html", data=data)
+        json_state+=[json.dumps(row[0])]
+
+    name=json.dumps('FL')
+    print name
+    return render_template("cost.html", data=data, state=state, name=name)
 
 
 @app.route('/data')

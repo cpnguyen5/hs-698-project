@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
     <head>
         <title>Beneficiaries' Percentage of Cancer</title>
     </head>
     {% extends "base.html" %}
     {% block content %}
     <body>
-        <table border = 1>
+    <h2 align="center">CMS Beneficiaries: United States Cancer Prevalence</h2>
+    <div class="table-responsive">
+        <table class="table table-hover">
             <thead>
-                <td>State</td>
-                <td>Avg Cancer %</td>
+                <td><strong>State</strong></td>
+                <td><strong>Avg Cancer %</strong></td>
             </thead>
 
             {% for row in rows %}
@@ -19,6 +21,7 @@
                 </tr>
             {% endfor %}
         </table>
+    </div>
     </body>
     {% endblock %}
 </html>

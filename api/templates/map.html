@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
+    <title>US: Beneficiaries' Percentage of Cancer</title>
+</head>
+{% extends "base.html" %}
+{% block content %}
 <body>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
-  <!-- I recommend you host this file on your own, since this will change without warning -->
   <!--<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>-->
   <script src= {{ js_file }} ></script>
-  <h1>CMS Beneficiaries: Cancer Prevalence</h1>
-  <div id="container" style="position: relative; width: 1000px; height: 1000px;"></div>
+  <h1 align="center">CMS Beneficiaries: Cancer Prevalence</h1>
 
-     <!--{ d_state }-->
+  <div id="container" style="position: relative; width: 1800px; height: 850px; left: 200px; top: 50px"></div>
+
      <script>
        var map = new Datamap({
             element: document.getElementById('container'),
             scope: 'usa',
             geographyConfig: {
                 highlightBorderColor: '#eaeaea',
-                highlightBorderWidth: 5,
+                highlightBorderWidth: 10,
                 popupTemplate: function(geography, data) {
                     return '<div class="hoverinfo"><strong>' + geography.properties.name + '</strong> <br /> Average Cancer Prevalence:' + data.prevalence + '%' + ' </div>'
                     }
@@ -230,8 +234,7 @@
           }
         }
         });
-
-
-
      </script>
+  </body>
+    {% endblock %}
 

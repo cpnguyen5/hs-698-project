@@ -1,96 +1,110 @@
 <!DOCTYPE html>
+<html lang="en">
 <meta charset="utf-8">
-<style>
+    <head>
+        <title>CMS State Cost</title>
+    </head>
+    {% extends "base.html" %}
+    {% block content %}
 
-body {
-  font: 10px sans-serif;
-}
+    <body>
+    <script src="//d3js.org/d3.v3.min.js"></script>
+    <h2 align="center">CMS Costs per State</h2>
+    <div class="container-fluid">
+        <a href="/cost/top" class="btn btn-info btn-lg" role="button">Top States</a>
+    </div>
 
-.bar rect {
-  fill: steelblue;
-}
+    <style>
 
-.bar text.value {
-  fill: white;
-}
+    body {
+      font: 15px sans-serif;
+    }
 
-.axis {
-  shape-rendering: crispEdges;
-}
+    .bar rect {
+      fill: steelblue;
+    }
 
-.axis path {
-  fill: none;
-}
+    .bar text.value {
+      fill: white;
+    }
 
-.x.axis line {
-  stroke: #fff;
-  stroke-opacity: .8;
-}
+    .axis {
+      shape-rendering: crispEdges;
+    }
 
-.y.axis path {
-  stroke: black;
-}
+    .axis path {
+      fill: none;
+    }
 
-</style>
-<body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
+    .x.axis line {
+      stroke: #fff;
+      stroke-opacity: .8;
+    }
 
-var m = [30, 10, 10, 30],
-    w = 960 - m[1] - m[3],
-    h = 930 - m[0] - m[2];
+    .y.axis path {
+      stroke: black;
+    }
 
-var format = d3.format(",.0f");
+    </style>
+    <script>
 
-var x = d3.scale.linear().range([0, w]),
-    y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
+    var m = [30, 10, 10, 30],
+        w = 960 - m[1] - m[3],
+        h = 930 - m[0] - m[2];
 
-var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
-    yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+    var format = d3.format(",.0f");
 
-var svg = d3.select("body").append("svg")
-    .attr("width", w + m[1] + m[3])
-    .attr("height", h + m[0] + m[2])
-  .append("g")
-    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+    var x = d3.scale.linear().range([0, w]),
+        y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
 
-d3.csv("{{ data_file }}", function(error, data) {
-  if (error) throw error;
+    var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
+        yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
 
-  // Parse numbers, and sort by value.
-  data.forEach(function(d) { d.value = +d.value; });
-  data.sort(function(a, b) { return b.value - a.value; });
+    var svg = d3.select("body").append("svg")
+        .attr("width", w + m[1] + m[3])
+        .attr("height", h + m[0] + m[2])
+      .append("g")
+        .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-  // Set the scale domain.
-  x.domain([0, d3.max(data, function(d) { return d.value; })]);
-  y.domain(data.map(function(d) { return d.name; }));
+    d3.csv("{{ data_file }}", function(error, data) {
+      if (error) throw error;
 
-  var bar = svg.selectAll("g.bar")
-      .data(data)
-    .enter().append("g")
-      .attr("class", "bar")
-      .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+      // Parse numbers, and sort by value.
+      data.forEach(function(d) { d.value = +d.value; });
+      data.sort(function(a, b) { return b.value - a.value; });
 
-  bar.append("rect")
-      .attr("width", function(d) { return x(d.value); })
-      .attr("height", y.rangeBand());
+      // Set the scale domain.
+      x.domain([0, d3.max(data, function(d) { return d.value; })]);
+      y.domain(data.map(function(d) { return d.name; }));
 
-  bar.append("text")
-      .attr("class", "value")
-      .attr("x", function(d) { return x(d.value); })
-      .attr("y", y.rangeBand() / 2)
-      .attr("dx", -3)
-      .attr("dy", ".35em")
-      .attr("text-anchor", "end")
-      .text(function(d) { return format(d.value); });
+      var bar = svg.selectAll("g.bar")
+          .data(data)
+        .enter().append("g")
+          .attr("class", "bar")
+          .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
 
-  svg.append("g")
-      .attr("class", "x axis")
-      .call(xAxis);
+      bar.append("rect")
+          .attr("width", function(d) { return x(d.value); })
+          .attr("height", y.rangeBand());
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
-});
+      bar.append("text")
+          .attr("class", "value")
+          .attr("x", function(d) { return x(d.value); })
+          .attr("y", y.rangeBand() / 2)
+          .attr("dx", -3)
+          .attr("dy", ".35em")
+          .attr("text-anchor", "end")
+          .text(function(d) { return format(d.value); });
 
-</script>
+      svg.append("g")
+          .attr("class", "x axis")
+          .call(xAxis);
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+    });
+
+    </script>
+    </body>
+    {% endblock %}

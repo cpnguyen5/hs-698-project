@@ -5,144 +5,87 @@
     </head>
     {% extends "base.html" %}
     {% block content %}
-    <body>
-        <table border = 1>
-            <thead>
-                <td>npi</td>
-                <td>provider_last_name</td>
-                <td>provider_first_name</td>
-                <td>provider_middle_initial</td>
-                <td>provider_credentials</td>
-                <td>provider_gender</td>
-                <td>provider_entity_type</td> <td>provider_street_address_1</td>
-                <td>provider_street_address_2</td>
-                <td>provider_city</td>
-                <td>provider_zip_code</td> <td>provider_state_code</td>
-                <td>provider_country_code</td> <td>provider_type</td>
-                <td>medicare_participation_indicator</td>
-                <td>number_of_HCPCS</td> <td>number_of_services</td>
-                <td>number_of_medicare_beneficiaries</td>
-                <td>total_submitted_charge_amount</td>
-                <td>total_medicare_allowed_amount</td>
-                <td>total_medicare_payment_amount</td>
-                <td>total_medicare_standardized_payment_amount</td>
-                <td>drug_suppress_indicator</td> <td>number_of_HCPCS_associated_with_drug_services</td>
-                <td>number_of_drug_services</td>
-                <td>number_of_medicare_beneficiaries_with_drug_services</td> <td>total_drug_submitted_charge_amount</td>
-                <td>total_drug_medicare_allowed_amount</td>
-                <td>total_drug_medicare_payment_amount</td>
-                <td>total_drug_medicare_standardized_payment_amount</td>
-                <td>medical_suppress_indicator</td>
-                <td>number_of_HCPCS_associated_medical_services</td>
-                <td>number_of_medical_services</td>
-                <td>number_of_medicare_beneficiaries_with_medical_services</td>
-                <td>total_medical_submitted_charge_amount</td>
-                <td>total_medical_medicare_allowed_amount</td>
-                <td>total_medical_medicare_payment_amount</td>
-                <td>total_medical_medicare_standardized_payment_amount</td>
-                <td>average_age_of_beneficiaries</td>
-                <td>number_of_beneficiaries_age_less_65</td>
-                <td>number_of_beneficiaries_age_65_to_74</td>
-                <td>number_of_beneficiaries_age_75_to_84</td>
-                <td>number_of_beneficiaries_age_greater_84</td>
-                <td>number_of_female_beneficiaries</td>
-                <td>number_of_male_beneficiaries</td>
-                <td>number_of_non_hispanic_white_beneficiaries</td>
-                <td>number_of_african_american_beneficiaries</td>
-                <td>number_of_asian_pacific_islander_beneficiaries</td>
-                <td>number_of_hispanic_beneficiaries</td>
-                <td>number_of_american_indian_alaskan_native_beneficiaries</td>
-                <td>number_of_beneficiaries_with_race_not_elsewhere_classified</td>
-                <td>number_of_beneficiaries_with_medicare_only_entitlement</td>
-                <td>number_of_beneficiaries_with_medicare_and_medicaid_entitlement</td>
-                <td>percent_of_beneficiaries_identified_with_atrial_fibrillation</td>
-                <td>percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia</td>
-                <td>percent_of_beneficiaries_identified_with_asthma</td>
-                <td>percent_of_beneficiaries_identified_with_cancer</td>
-                <td>percent_of_beneficiaries_identified_with_heart_failure</td>
-                <td>percent_of_beneficiaries_identified_with_chronic_kidney_disease</td>
-                <td>percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease</td>
-                <td>percent_of_beneficiaries_identified_with_depression</td>
-                <td>percent_of_beneficiaries_identified_with_diabetes</td>
-                <td>percent_of_beneficiaries_identified_with_hyperlipidemia</td>
-                <td>percent_of_beneficiaries_identified_with_hypertension</td>
-                <td>percent_of_beneficiaries_identified_with_ischemic_heart_disease</td>
-                <td>percent_of_beneficiaries_identified_with_osteoporosis</td>
-                <td>percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis</td>
-                <td>percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders</td>
-                <td>percent_of_beneficiaries_identified_with_stroke</td>
-                <td>average_HCC_risk_score_of_beneficiaries</td>
-            </thead>
 
-            {% for row in data %}
-                <tr>
-                    <td>{{row[0]}}</td>
-                    <td>{{row[1]}}</td>
-                    <td>{{row[2]}}</td>
-                    <td>{{row[3]}}</td>
-                    <td>{{row[4]}}</td>
-                    <td>{{row[5]}}</td>
-                    <td>{{row[6]}}</td>
-                    <td>{{row[7]}}</td>
-                    <td>{{row[8]}}</td>
-                    <td>{{row[9]}}</td>
-                    <td>{{row[10]}}</td>
-                    <td>{{row[11]}}</td>
-                    <td>{{row[12]}}</td>
-                    <td>{{row[13]}}</td>
-                    <td>{{row[14]}}</td>
-                    <td>{{row[15]}}</td>
-                    <td>{{row[16]}}</td>
-                    <td>{{row[17]}}</td>
-                    <td>{{row[18]}}</td>
-                    <td>{{row[19]}}</td>
-                    <td>{{row[20]}}</td>
-                    <td>{{row[21]}}</td>
-                    <td>{{row[22]}}</td>
-                    <td>{{row[23]}}</td>
-                    <td>{{row[24]}}</td>
-                    <td>{{row[25]}}</td>
-                    <td>{{row[26]}}</td>
-                    <td>{{row[27]}}</td>
-                    <td>{{row[28]}}</td>
-                    <td>{{row[29]}}</td>
-                    <td>{{row[30]}}</td>
-                    <td>{{row[31]}}</td>
-                    <td>{{row[32]}}</td>
-                    <td>{{row[33]}}</td>
-                    <td>{{row[34]}}</td>
-                    <td>{{row[35]}}</td>
-                    <td>{{row[36]}}</td>
-                    <td>{{row[37]}}</td>
-                    <td>{{row[38]}}</td>
-                    <td>{{row[39]}}</td>
-                    <td>{{row[40]}}</td>
-                    <td>{{row[41]}}</td>
-                    <td>{{row[42]}}</td>
-                    <td>{{row[43]}}</td>
-                    <td>{{row[44]}}</td>
-                    <td>{{row[45]}}</td>
-                    <td>{{row[46]}}</td>
-                    <td>{{row[47]}}</td>
-                    <td>{{row[48]}}</td>
-                    <td>{{row[49]}}</td>
-                    <td>{{row[50]}}</td>
-                    <td>{{row[51]}}</td>
-                    <td>{{row[52]}}</td>
-                    <td>{{row[53]}}</td>
-                    <td>{{row[54]}}</td>
-                    <td>{{row[55]}}</td>
-                    <td>{{row[56]}}</td>
-                    <td>{{row[57]}}</td>
-                    <td>{{row[58]}}</td>
-                    <td>{{row[59]}}</td>
-                    <td>{{row[60]}}</td>
-                    <td>{{row[61]}}</td>
-                    <td>{{row[62]}}</td>
-                    <td>{{row[63]}}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </body>
+<body>
+    <div class="jumbotron">
+      <h1 align="center">Datasets</h1>
+      <p class="text-center">Links below provide detailed view of the respective dataset.</p>
+      <div align="center">
+        <div class="container-fluid">
+            <a href="/data/report" class="btn btn-info btn-lg" role="button">Report Dataset</a>
+            <a href="/data/puf" class="btn btn-info btn-lg" role="button">PUF Dataset</a>
+            <a href="/data/cancer" class="btn btn-info btn-lg" role="button">Cancer Dataset</a>
+        </div>
+      </div>
+    </div>
+    <div align="center">
+            <img src={{ cms_img }} class="img-rounded"></img>
+    </div>
+    <div class="container">
+        <h3>Centers for Medicare & Medicaid Services (CMS) Medicare Provider Utilization and Payment Data</h3>
+        <p class="text-left">
+          The Centers for Medicare & Medicaid Services (CMS) distributes this public dataset in order to assure transparency,
+          affordability, and accountability of the American healthcare system. The datasets provides information on services
+          and procedures provided to Medicare beneficiaries by physicians and other healthcare professionals. This encompasses
+          information on utilization, payment (allowed amount and Medicare payment), as well as submitted charges categorized
+          by National Provider Identifier (NPI), Healthcare Common Procedure Coding Systems (HCPCS) code, and place of service.
+          The Provider Utilization and Payment data is based on information from administrative claims data for Medicare
+          beneficiaries enrolled in the fee-for-service program.
+        </p>
+        <p>
+            There are two types of summary tables or datasets within:
+        <ul class="list-unstyled">
+            <li>Physician and other Supplier (PUF) Detailed Data File - <strong>"PUF"</strong></li>
+            <li>Medicare State/National HCPCS Aggregate Tables - <strong>"Report"</strong></li>
+        </ul>
+        </p>
+        <p><strong>Limitations: </strong></p>
+        <ul class="list-unstyled">
+            <li>Data may not be representative of a physician's entire practice (only includes information on Medicare
+              fee-for-service beneficiaries).</li>
+            <li>Data only includes information for Medicare beneficiaries with Part B FFS coverage and not other Medicare
+              programs.</li>
+            <li>Data is not intended to indicate the quality of care and are not risk-adjusted to account for differences
+              in underlying severity of disease of patient populations.</li>
+            <li>The data does not include data for services that were performed on <10 beneficiaries. Thus, may be
+                underestimating the true Part B FFS totals.</li>
+            <li>Some providers may bill under both an individual and organizational NPI. It is difficult to determine a
+              provider's actual total.</li>
+        </ul>
+        <h4>"Report"
+            <small>Medicare Physician and Other Supplier National Provider Identifier (NPI) Aggregate Report, Calendar
+                Year 2014</small>
+        </h4>
+        <p>
+            The dataset contains information on utilization, payment, and submitted charges organized by NPI. HCPCS drug
+            indicator is also included to identify whether the HCPCS product or service is a drug per definition of the
+            Medicare Part B Drug ASP list. Sub-totals for medical type and drug services as well as beneficiary
+            demographic and health characteristics are provided within the dataset (e.g. race, sex, chronic conditions).
+        </p>
+
+        <h4>"PUF"
+            <small>Medicare Provider Utilization and Payment Data: Physician and Other Supplier PUF CY2014</small>
+        </h4>
+        <p>
+            The spending and utilization data in the PUF dataset are aggregated by NPI, HCPCS code, and place of service
+            (facility or non-facility). There may be multiple records for a given NPI based on the number of distinct HCPCS
+            codes that were billed and where services were provided.
+        </p>
+
+        <h3>Supplementary Datasets</h3>
+        <div align="center">
+          <img src={{ bchc_img }}></img>
+        </div>
+        <h4>"Cancer"
+            <small>Big Cities Health Coalition Inventory Data: Cancer Incidence</small>
+        </h4>
+        <p>
+            The "Cancer" dataset is a filtered view derived from the Big Cities Health Inventory Data, which reports
+            epidemiologic data on the leading causes of morbidity and mortality for large cities. The filtered view
+            specifically focuses on one health indicator, in this case cancer, and its impact in the community.
+        </p>
+    </div>
+
+</body>
     {% endblock %}
 </html>

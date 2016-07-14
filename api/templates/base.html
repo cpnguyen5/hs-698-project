@@ -4,33 +4,66 @@
     <title>HS 698 Project: CMS</title>
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
 </head>
+<style>
+    #body {
+      padding:50px;
+      padding-bottom:100px;   /
+    }
+    .footer {
+      position: static;
+      bottom: 0;
+      width: 100%;
+      /* Set the fixed height of the footer here */
+      height: 250px;
+      background-color: #A2A3A0;
+      color: #000000
+    }
+    .fa-github {
+        color: black;
+    }
+</style>
     <body>
-        <!--<div>Navigation: <a href="/">Home</a>-->
-            <!--<a href="/state">State</a>-->
-            <!--<a href="/data">Data</a>-->
-            <!--<a href="/map">Prevalence Map</a>-->
-            <!--<a href="/cost">State Costs</a>-->
-        <!--</div>-->
-        <div class="navbar navbar-inverse">
-            <div class="navbar-inner">
+        <nav class="navbar navbar-inverse">
               <div class=container-fluid">
-                <a class="brand" href="/">Navigation</a>
-                <ul class="nav">
-                      <li class="divider-vertical"><a href="/">Home</a></li>
-                      <li class="divider-vertical"><a href="/state">State</a></li>
-                      <li class="divider-vertical"><a href="/data">Data</a></li>
-                      <li class="divider-vertical"><a href="/map">Map</a></li>
-                      <li class="divider-vertical"><a href="/cost">Cost</a></li>
-                </ul>
+                  <div class="navbar-header">
+                      <a class="navbar-brand" href="/">Home</a>
+                  </div>
+                  <ul class="nav navbar-nav">
+                    <li><a href="/data">Data</a></li>
+                    <li><a href="/state">State</a></li>
+                    <li><a href="/map">Map</a></li>
+                    <li><a href="/cost">Cost</a></li>
+                  </ul>
               </div>
+            </nav>
+
+        {% block content %}{% endblock %}
+        <div id="body"></div>
+
+        <div class="footer">
+            <div class="container-fluid text-center">
+                <h5><strong>Contact Information</strong></h5>
+                    <p align="center">
+                        University of San Francisco <br>
+                        School of Nursing and Health Professions Health Informatics<br>
+                        HS 698 <br>
+                    </p>
+                    <p><span class="glyphicon glyphicon-envelope"></span> cpnguyen5@dons.usfca.edu</p>
+
+                    <a href="https://github.com/cpnguyen5/hs-698-project">
+                        <i class="fa fa-github fa-5x"></i>
+                        <!--<img src={{ gh_img }}> -->
+                    </a>
+                <!--{% block footer %}{% endblock %}-->
             </div>
         </div>
-        {% block content %}{% endblock %}
     </body>
 </html>
 

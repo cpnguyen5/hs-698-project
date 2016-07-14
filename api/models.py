@@ -75,12 +75,13 @@ class Report(db.Model):
     percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders = db.Column(db.Integer, nullable=True)
     percent_of_beneficiaries_identified_with_stroke = db.Column(db.Integer, nullable=True)
     average_HCC_risk_score_of_beneficiaries = db.Column(db.Float, nullable=True)
-    puf = db.relationship('puf', backref='report')
+    # puf = db.relationship('puf', backref='report')
 
 
 class Puf(db.Model):
     __tablename__ = "puf"
 
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     npi = db.Column(db.Integer, primary_key=True)
     provider_last_name = db.Column(db.String(50), nullable=True)
     provider_first_name = db.Column(db.String(50), nullable=True)
@@ -120,3 +121,5 @@ class Cancer(db.Model):
     race = db.Column(db.String(20), nullable=True)
     value = db.Column(db.Float, nullable=True)
     place = db.Column(db.String(50), nullable=True)
+
+

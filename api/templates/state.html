@@ -1,25 +1,71 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
-    <head>
-        <title>Beneficiaries' Percentage of Cancer</title>
-    </head>
+<head>
+    <title>Beneficiaries' Percentage of Cancer</title>
+</head>
     {% extends "base.html" %}
     {% block content %}
-    <body>
-    <h2 align="center">CMS Beneficiaries: United States Cancer Prevalence</h2>
+<style>
+    #body {
+      padding:20px;
+      padding-bottom:10px;   /
+    }
+    th {
+      text-align: center;
+    }
+    td {
+      text-align: center;
+    }
+</style>
+<body>
+    <h2 align="center">CMS Beneficiaries: United States Prevalence</h2>
+    <div id="body"></div>
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table class="table table-hover table-bordered">
             <thead>
-                <td><strong>State</strong></td>
-                <td><strong>Avg Cancer %</strong></td>
+                <tr>
+                    <th>State</th>
+                    <th>Avg Cancer (%)</th>
+                    <th>Atrial Fibrillation (%)</th>
+                    <th>Alzheimers/ Dementia (%)</th>
+                    <th>Asthma (%)</th>
+                    <th>Heart Failure (%)</th>
+                    <th>Chronic Kidney Disease (%)</th>
+                    <th>Chronic Obstructive Pulmonary Disease (%)</th>
+                    <th>Depression (%)</th>
+                    <th>Diabetes (%)</th>
+                    <th>Hyperlipidemia (%)</th>
+                    <th>Hypertension (%)</th>
+                    <th>Ischemic Heart Disease (%)</th>
+                    <th>Osteoporosis (%)</th>
+                    <th>Rheumatoid Arthritis Osteoarthritis (%)</th>
+                    <th>Schizophrenia (%)</th>
+                    <th>Stroke (%)</th>
+             </tr>
             </thead>
-
+            <tbody>
             {% for row in rows %}
                 <tr>
                     <td>{{row[0]}}</td>
                     <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[5]}}</td>
+                    <td>{{row[6]}}</td>
+                    <td>{{row[7]}}</td>
+                    <td>{{row[8]}}</td>
+                    <td>{{row[9]}}</td>
+                    <td>{{row[10]}}</td>
+                    <td>{{row[11]}}</td>
+                    <td>{{row[12]}}</td>
+                    <td>{{row[13]}}</td>
+                    <td>{{row[14]}}</td>
+                    <td>{{row[15]}}</td>
+                    <td>{{row[16]}}</td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
     </div>
     </body>

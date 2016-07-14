@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship, sessionmaker, scoped_session
 from api import db
 from api.models import Report, Puf, Cancer
 import urllib
+import csv
 
 
 def get_path():
@@ -316,16 +317,17 @@ def init_db():
     # #Create engine to store data in local directory's db file
     db_path=os.path.join(get_path(), 'cms3.db')
     engine = db.engine # sqlalchemy lib -- engine=create_engine('sqlite:///%s' % (db_path))
+
     db_is_new = not os.path.exists(db_path)
     if db_is_new:
-        print "Database created, creating table(s) schema"
+        print "Database created, creating table(s) schema..."
         #Remove spontaneous quoting of column name
         db.engine.dialect.identifier_preparer.initial_quote = ''
         db.engine.dialect.identifier_preparer.final_quote = ''
 
         #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
         db.create_all() # sqlalchemy lib -- Base.metadata.create_all(bind=engine)
-
+        print "Table(s) schema created, inserting data..."
         #Insert Data
         #Individual Insert
         # db.session.add(Report(npi=110, provider_state_code='AZ'))
@@ -341,16 +343,42 @@ def init_db():
         df_can = readBCH()
         can_lst = df_can.to_dict(orient='records')
         db.session.execute(Cancer.__table__.insert(), can_lst)
+
+        #Import puf data
+        # schema_file = os.path.join(get_path(), 'puf_schema.sql')
+        # f_schema = open(schema_file, 'r')
+        # schema = f_schema.read()
+        # f_schema.close()
+        # c.executescript(schema)
+        # conn.commit()
         db.session.commit() #Commit
         db.session.close() #close session
+        insertPUF()
+
+
 
     else:
         print "Database exists; opened successfully"
+        db.session.commit()  # Commit
+        db.session.close()  # close session
+        insertPUF()
     return
 
 
-# def insert_db():
-#     engine = init_db()
+
+def insertPUF():
+    # db_path=os.path.join(get_path(), 'cms3.db')
+    # conn = sqlite3.connect(db_path)
+    # c = conn.cursor()
+    # schema_file = os.path.join(get_path(), 'puf_schema.sql')
+    # f_schema = open(schema_file, 'r')
+    # schema = f_schema.read()
+    # f_schema.close()
+    # c.executescript(schema)
+    with open(os.path.join(get_path(), 'puf_2014.csv'), 'rb') as fin:
+        dr = csv.DictReader(fin)
+        to_db = [(i['col1'], i['col2']) for i in dr]
+        # conn.commit()
 
 
 def download():
@@ -358,6 +386,7 @@ def download():
     f_path=os.path.join(get_path(), 'que.sql')
     urllib.urlretrieve('http://example.com/file.ext', f_path)
     return "File Downloaded"
+
 
 #main
 # data = readCSV().info()
@@ -369,7 +398,6 @@ def download():
 # print query(get_path())
 
 # init_db()
-download()
 
 # print data.isnull().sum()
 # print data.dropna()

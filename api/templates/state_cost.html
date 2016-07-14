@@ -6,105 +6,112 @@
     </head>
     {% extends "base.html" %}
     {% block content %}
-
+<style>
+    #body {
+      padding:50px;
+      padding-bottom:20px;
+    }
+</style>
     <body>
-    <script src="//d3js.org/d3.v3.min.js"></script>
-    <h2 align="center">CMS Costs per State</h2>
-    <div class="container-fluid">
-        <a href="/cost/top" class="btn btn-info btn-lg" role="button">Top States</a>
-    </div>
+        <script src="//d3js.org/d3.v3.min.js"></script>
+        <h2 align="center">CMS Costs per State</h2>
+        <div align="center">
+            <div class="container-fluid">
+                <a href="/cost/top" class="btn btn-info btn-lg" role="button">View Breakdown of Top 5 States</a>
+            </div>
+        </div>
+        <div id="body"></div>
+        <style>
+        body {
+          font: 15px sans-serif;
+        }
 
-    <style>
+        .bar rect {
+          fill: steelblue;
+        }
 
-    body {
-      font: 15px sans-serif;
-    }
+        .bar text.value {
+          fill: white;
+        }
 
-    .bar rect {
-      fill: steelblue;
-    }
+        .axis {
+          shape-rendering: crispEdges;
+        }
 
-    .bar text.value {
-      fill: white;
-    }
+        .axis path {
+          fill: none;
+        }
 
-    .axis {
-      shape-rendering: crispEdges;
-    }
+        .x.axis line {
+          stroke: #fff;
+          stroke-opacity: .8;
+        }
 
-    .axis path {
-      fill: none;
-    }
+        .y.axis path {
+          stroke: black;
+        }
 
-    .x.axis line {
-      stroke: #fff;
-      stroke-opacity: .8;
-    }
+        </style>
+        <script>
 
-    .y.axis path {
-      stroke: black;
-    }
+        var m = [30, 10, 10, 30],
+            w = 960 - m[1] - m[3],
+            h = 930 - m[0] - m[2];
 
-    </style>
-    <script>
+        var format = d3.format(",.0f");
 
-    var m = [30, 10, 10, 30],
-        w = 960 - m[1] - m[3],
-        h = 930 - m[0] - m[2];
+        var x = d3.scale.linear().range([0, w]),
+            y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
 
-    var format = d3.format(",.0f");
+        var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
+            yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
 
-    var x = d3.scale.linear().range([0, w]),
-        y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
+        var svg = d3.select("body").append("svg")
+            .attr("width", w + m[1] + m[3])
+            .attr("height", h + m[0] + m[2])
+          .append("g")
+            .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-    var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
-        yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+        d3.csv("{{ data_file }}", function(error, data) {
+          if (error) throw error;
 
-    var svg = d3.select("body").append("svg")
-        .attr("width", w + m[1] + m[3])
-        .attr("height", h + m[0] + m[2])
-      .append("g")
-        .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+          // Parse numbers, and sort by value.
+          data.forEach(function(d) { d.value = +d.value; });
+          data.sort(function(a, b) { return b.value - a.value; });
 
-    d3.csv("{{ data_file }}", function(error, data) {
-      if (error) throw error;
+          // Set the scale domain.
+          x.domain([0, d3.max(data, function(d) { return d.value; })]);
+          y.domain(data.map(function(d) { return d.name; }));
 
-      // Parse numbers, and sort by value.
-      data.forEach(function(d) { d.value = +d.value; });
-      data.sort(function(a, b) { return b.value - a.value; });
+          var bar = svg.selectAll("g.bar")
+              .data(data)
+            .enter().append("g")
+              .attr("class", "bar")
+              .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
 
-      // Set the scale domain.
-      x.domain([0, d3.max(data, function(d) { return d.value; })]);
-      y.domain(data.map(function(d) { return d.name; }));
+          bar.append("rect")
+              .attr("width", function(d) { return x(d.value); })
+              .attr("height", y.rangeBand());
 
-      var bar = svg.selectAll("g.bar")
-          .data(data)
-        .enter().append("g")
-          .attr("class", "bar")
-          .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+          bar.append("text")
+              .attr("class", "value")
+              .attr("x", function(d) { return x(d.value); })
+              .attr("y", y.rangeBand() / 2)
+              .attr("dx", -3)
+              .attr("dy", ".35em")
+              .attr("text-anchor", "end")
+              .text(function(d) { return format(d.value); });
 
-      bar.append("rect")
-          .attr("width", function(d) { return x(d.value); })
-          .attr("height", y.rangeBand());
+          svg.append("g")
+              .attr("class", "x axis")
+              .call(xAxis);
 
-      bar.append("text")
-          .attr("class", "value")
-          .attr("x", function(d) { return x(d.value); })
-          .attr("y", y.rangeBand() / 2)
-          .attr("dx", -3)
-          .attr("dy", ".35em")
-          .attr("text-anchor", "end")
-          .text(function(d) { return format(d.value); });
+          svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis);
+        });
 
-      svg.append("g")
-          .attr("class", "x axis")
-          .call(xAxis);
-
-      svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
-    });
-
-    </script>
+        </script>
     </body>
     {% endblock %}
+</html>

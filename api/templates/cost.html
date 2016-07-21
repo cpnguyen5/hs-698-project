@@ -12,6 +12,10 @@
       padding:50px;
       padding-bottom:50px;
     }
+    .bg-1 {
+        background-color: #1abc9c; /* Green */
+        color: #ffffff;
+    }
 </style>
 <body>
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -59,13 +63,63 @@ rect:hover {  fill:grey; }
     width:100px;
 }
 
+    .footer {
+      position: absolute;
+      bottom: 0;
+      height: 250px;
+    }
+
+<!--body{-->
+    <!--width:1060px;-->
+    <!--margin:50px auto;-->
+<!--}-->
+
+path {  stroke: #fff; }
+path:hover {  opacity:0.9; }
+rect:hover {  fill:grey; }
+.axis {  font: 20px sans-serif; }
+.legend tr{    border-bottom:1px solid grey; }
+.legend tr:first-child{    border-top:1px solid grey; }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {  display: none; }
+.legend{
+    margin-bottom:76px;
+    display:inline-block;
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+.legend td{
+    padding:5px 25px;
+    vertical-align:bottom;
+}
+.legendFreq, .legendPerc{
+    align:right;
+    width:100px;
+}
 </style>
     <div align="center">
         <div class="container-fluid">
             <a href="/cost" class="btn btn-info btn-lg" role="button">Return to State Cost Overview</a>
         </div>
         <div id="body"></div>
+    </div>
 
+    <div class="container-fluid bg-1">
+    <div class="container">
+        <h1 align="center">Breakdown: Age</h1>
+            <ul class="list">
+                <li>For all cost-leading states, <strong>>50%</strong> of the costs are attributed from the elderly population.</li>
+            </ul>
+    </div>
+    </div>
+    <div align="center">
         <div class="container-fluid">
         <div id='dashboard'></div>
         <script>

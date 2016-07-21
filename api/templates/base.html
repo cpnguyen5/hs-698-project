@@ -14,7 +14,7 @@
 <style>
     #body {
       padding:50px;
-      padding-bottom:100px;   /
+      padding-bottom:100px;
     }
     .footer {
       position: static;
@@ -33,13 +33,24 @@
         <nav class="navbar navbar-inverse">
               <div class=container-fluid">
                   <div class="navbar-header">
-                      <a class="navbar-brand" href="/">Home</a>
+                      <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span>  Home</a>
                   </div>
                   <ul class="nav navbar-nav">
-                    <li><a href="/data">Data</a></li>
-                    <li><a href="/state">State</a></li>
-                    <li><a href="/map">Map</a></li>
-                    <li><a href="/cost">Cost</a></li>
+                      <li><a href="/data">Data</a></li>
+                      <!--<li class="dropdown">-->
+                          <!--<a href="/data" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"-->
+                             <!--aria-expanded="false">Data <span class="caret"></span></a>-->
+                          <!--<ul class="dropdown-menu">-->
+                              <!--<li><a href='/data/report')>Report Dataset</a></li>-->
+                              <!--<li role="separator" class="divider"></li>-->
+                              <!--<li><a href='/data/puf')>PUF Dataset</a></li>-->
+                              <!--<li role="separator" class="divider"></li>-->
+                              <!--<li><a href='/data/cancer')>Cancer Dataset</a></li>-->
+                          <!--</ul>-->
+                      <!--</li>-->
+                      <li><a href="/prevalence">Prevalence</a></li>
+                      <li><a href="/cost">Cost</a></li>
+                      <li><a href="/cancer">Cancer</a></li>
                   </ul>
               </div>
             </nav>
@@ -48,7 +59,7 @@
         <div id="body"></div>
 
         <div class="footer">
-            <div class="container-fluid text-center">
+            <div class="container text-center">
                 <h5><strong>Contact Information</strong></h5>
                     <p align="center">
                         University of San Francisco <br>

@@ -2,16 +2,35 @@
 <html>
 <meta charset="utf-8">
 <head>
-    <title>US: Beneficiaries' Percentage of Cancer</title>
+    <title>Case Study: Cancer</title>
 </head>
 {% extends "base.html" %}
 {% block content %}
+<style>
+    .bg-1 {
+        background-color: #1abc9c; /* Green */
+        color: #ffffff;
+    }
+    #title {
+        color: #555555
+    }
+    li {
+        font-size: 18px
+    }
+</style>
 <body>
+    <div class="jumbotron">
+        <h1 align="center">CMS Beneficiaries: Cancer Prevalence</h1>
+        <h2 align="center">Interactive United States Map</h2>
+        <p class="text-center">Please hover over interactive United States map to view cancer prevalence for each
+            respective state.</p>
+    </div>
+
+    <div>
       <script src="http://d3js.org/d3.v3.min.js"></script>
       <script src="http://d3js.org/topojson.v1.min.js"></script>
       <!--<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>-->
       <script src= {{ js_file }}></script>
-      <h1 align="center">CMS Beneficiaries: Cancer Prevalence</h1>
       <div id="container" style="position: relative; width: 1500px; height: 900px; left: 325px; top: 0px; bottom: 50px"></div>
 
          <script>
@@ -235,6 +254,41 @@
             }
             });
          </script>
+
+    </div>
+    <div class="container-fluid bg-1">
+        <div class="container">
+        <h1 align="center">Facts</h1>
+            <h3 id=title align="left">Background</h3>
+                <ul class="list">
+                    <li> In 2012, more than 1.6 million new cases of cancer were diagnosed. <strong>50%</strong> of those
+                        cases (880,000) were over the age of 65. The number of elderly CMS beneficiaries with cancer are
+                        projected to grow by 40% over the next 10 years. (American Cancer Society)</li>
+                    <li> Elderly people are 10 times more likely to be diagnosed with cancer, regardless of race or ethnicity.</li>
+                    <li>Medicare beneficiaries with cancer have higher annual out-of-pocket costs (<strong>$1,500</strong>)
+                        than beneficiaries without the disease.</li>
+                    <li>In 2011, Medicare payments for cancer-related treatment totaled $34.4 billion, 10% of Medicare
+                        fee-for-service dollars</li>
+                    <li> Medicare is of high importance in providing a lifeline of affordable and quality health care coverage.
+                        There is an important relationship between Medicare and cancer disease -- financial impact on CMS
+                        programs and beneficiaries (out-of-pocket expenses).</li>
+                </ul>
+            <div align="center">
+            <img align="center" src="static/img/health_costs.jpg" class="img-thumbnail" width="304" height="336">
+            </div>
+            <h3 id=title align="left">Medicare Part B services</h3>
+                <ul class="list">
+                    <li>Part B of CMS (Supplementary Medical Insurance Program) covers physician services, outpatient services,
+                    durable medical equipment, clinical laboratory and physicial therapy services.</li>
+                    <li>Covers drugs that are administered to a patient by a health care professional in an office or
+                        clinic setting, including certain medications used to treat cancer or side effects of chemotherapy.</li>
+                    <li>Covers cancer screenings to detect early cancer or precancerous growths, when treatment is most effective.</li>
+                </ul>
+        <h1 align="center">Oncology Care Model</h1>
+        </div>
+
+        <div id="body"></div>
+    </div>
   </body>
     {% endblock %}
 </html>

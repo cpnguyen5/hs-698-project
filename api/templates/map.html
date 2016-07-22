@@ -17,6 +17,52 @@
     li {
         font-size: 18px
     }
+    p {
+        font-size: 18px
+    }
+    th {
+      text-align: center;
+      font-size: 16px
+    }
+    #sub {
+        font-size: 16px
+    }
+    #body {
+      padding:20px;
+      padding-bottom:50px;
+    }
+    <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      position: relative;
+      width: 960px;
+    }
+
+    .axis text {
+      font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .bar {
+      fill: steelblue;
+      fill-opacity: .9;
+    }
+
+    .x.axis path {
+      display: none;
+    }
+
+    label {
+      position: static;
+      bottom: 900px;
+      right: 200px;
+    }
 </style>
 <body>
     <div class="jumbotron">
@@ -25,13 +71,14 @@
         <p class="text-center">Please hover over interactive United States map to view cancer prevalence for each
             respective state.</p>
     </div>
-
+    <p id="sub" class="text-center"> The overall average prevalence of cancer amongst Medicare & Medicaid beneficiaries
+        in the United States is <strong>{{ us_avg }}%</strong>.</p>
     <div>
       <script src="http://d3js.org/d3.v3.min.js"></script>
       <script src="http://d3js.org/topojson.v1.min.js"></script>
       <!--<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>-->
       <script src= {{ js_file }}></script>
-      <div id="container" style="position: relative; width: 1500px; height: 900px; left: 325px; top: 0px; bottom: 50px"></div>
+      <div id="container" style="position: relative; width: 1500px; height: 750px; left: 155px; top: 0px; bottom: 50px"></div>
 
          <script>
            var map = new Datamap({
@@ -256,9 +303,22 @@
          </script>
 
     </div>
+    <div class="container">
+        <h2 align="center">Distribution of Cancer Prevalence Amongst CMS Beneficiaries</h2>
+        <ul class="list">
+                <li>The distribution of cancer amongst beneficiaries under Medicare & Medicaid program does not have an even
+                    distribution. The plot below indicates that there is a positive or right-skewed distribution, indicating that
+                    the population mean/average is greater than the median (middle value) and mode (most frequent prevalence
+                    value). </li>
+                <li> Outliers are detected to be any prevalence value above <strong>{{ outlier['upper'] }}%</strong> (upper bound)
+                    and any values below <strong>{{ outlier['lower'] }}%</strong> (lower bound).</li>
+            </ul>
+        <img src={{ chist_fig }} width="1200" height="700" align="center"></img>
+    </div>
+
     <div class="container-fluid bg-1">
         <div class="container">
-        <h1 align="center">Facts</h1>
+        <h1 align="center">Information</h1>
             <h3 id=title align="left">Background</h3>
                 <ul class="list">
                     <li> In 2012, more than 1.6 million new cases of cancer were diagnosed. <strong>50%</strong> of those
@@ -273,10 +333,8 @@
                         There is an important relationship between Medicare and cancer disease -- financial impact on CMS
                         programs and beneficiaries (out-of-pocket expenses).</li>
                 </ul>
-            <div align="center">
-            <img align="center" src="static/img/health_costs.jpg" class="img-thumbnail" width="304" height="336">
-            </div>
-            <h3 id=title align="left">Medicare Part B services</h3>
+
+            <h3 id=title align="left">CMS Part B services</h3>
                 <ul class="list">
                     <li>Part B of CMS (Supplementary Medical Insurance Program) covers physician services, outpatient services,
                     durable medical equipment, clinical laboratory and physicial therapy services.</li>
@@ -284,10 +342,166 @@
                         clinic setting, including certain medications used to treat cancer or side effects of chemotherapy.</li>
                     <li>Covers cancer screenings to detect early cancer or precancerous growths, when treatment is most effective.</li>
                 </ul>
-        <h1 align="center">Oncology Care Model</h1>
-        </div>
+            <h3 id="title" align="left">Risk Factors</h3>
+            <p>Research has demonstrated that certain risk factors may increase an individual's chances of developing
+                cancer. Such factors may include demographic attributes (e.g. age, ethnicity), family history, and
+                exposure to chemicals. (National Cancer Institute)</p>
+            <p>Risks were identified and determined by epidemiology studies, in which large groups of patients diagnosed
+                with cancer were compared to groups that did not develop the disease.</p>
 
+            <div align="center"><p>View the following page for an in-depth exploration of potential risk factors.</p>
+                <a href="/cancer/risk" class="btn btn-info btn-lg" role="button">Risk Factors</a>
+            </div>
+        </div>
         <div id="body"></div>
+    </div>
+
+
+    <div class="container text-center">
+        <h2>Average CMS Costs from Cancer Beneficiaries per State</h2>
+        <p>The state with the highest costs for services & procedures provided under CMS is <strong>{{ max_state[0] }}
+            </strong>with an average cost of <strong>${{ max_state[1] }}</strong>.</p>
+        <p>The state with the lowest costs for services & procedures provided under CMS is <strong>{{ min_state[0] }}
+            </strong>with an average cost of <strong>${{ min_state[1] }}</strong>.</p>
+    </div>
+    <div class="container text-right">
+        <label><input type="checkbox"> Sort values</label>
+        <script src="//d3js.org/d3.v3.min.js"></script>
+        <script>
+
+            var margin = {top: 20, right: 20, bottom: 30, left: 300},
+                width = 1460 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+            var formatSuffix = d3.format("s");
+
+            var x = d3.scale.ordinal()
+                .rangeRoundBands([0, width], .1, 1);
+
+            var y = d3.scale.linear()
+                .range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(formatSuffix);
+
+            var svg = d3.select("body").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            d3.tsv("{{ cancer_costs_file }}", function(error, data) {
+
+              data.forEach(function(d) {
+                d.costs = +d.costs;
+              });
+
+              x.domain(data.map(function(d) { return d.state; }));
+              y.domain([0, d3.max(data, function(d) { return d.costs; })]);
+
+              svg.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis);
+
+              svg.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis)
+                .append("text")
+                  .attr("transform", "rotate(-90)")
+                  .attr("y", 6)
+                  .attr("dy", ".71em")
+                  .style("text-anchor", "end")
+                  .text("Average Costs ($)");
+
+              svg.selectAll(".bar")
+                  .data(data)
+                .enter().append("rect")
+                  .attr("class", "bar")
+                  .attr("x", function(d) { return x(d.state); })
+                  .attr("width", x.rangeBand())
+                  .attr("y", function(d) { return y(d.costs); })
+                  .attr("height", function(d) { return height - y(d.costs); });
+
+              d3.select("input").on("change", change);
+
+              var sortTimeout = setTimeout(function() {
+                d3.select("input").property("checked", true).each(change);
+              }, 2000);
+
+              function change() {
+                clearTimeout(sortTimeout);
+
+                // Copy-on-write since tweens are evaluated after a delay.
+                var x0 = x.domain(data.sort(this.checked
+                    ? function(a, b) { return b.costs - a.costs; }
+                    : function(a, b) { return d3.ascending(a.state, b.state); })
+                    .map(function(d) { return d.state; }))
+                    .copy();
+
+                svg.selectAll(".bar")
+                    .sort(function(a, b) { return x0(a.state) - x0(b.state); });
+
+                var transition = svg.transition().duration(750),
+                    delay = function(d, i) { return i * 50; };
+
+                transition.selectAll(".bar")
+                    .delay(delay)
+                    .attr("x", function(d) { return x0(d.state); });
+
+                transition.select(".x.axis")
+                    .call(xAxis)
+                  .selectAll("g")
+                    .delay(delay);
+              }
+            });
+
+     </script>
+
+    </div>
+    <div class="container text-right">
+        <h3 align="center">States with Lowest CMS Costs</h3>
+                <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Costs ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in low_cost %}
+                        <tr>
+                            <td align="center">{{row[0]}}</td>
+                            <td align="center">{{row[1]}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <h3 align="center">States with Highest CMS Costs</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Costs ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in high_cost %}
+                        <tr>
+                            <td align="center">{{row[0]}}</td>
+                            <td align="center">{{row[1]}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
     </div>
   </body>
     {% endblock %}

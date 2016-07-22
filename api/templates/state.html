@@ -84,15 +84,15 @@
     <div class="jumbotron">
         <h1 align="center">CMS Beneficiaries: United States Disease Prevalence</h1>
         <!--<p class="text-center">Links below provide detailed view of the respective dataset.</p>-->
+        <div align="center">
+        <img align="center" src="static/img/prevalence.jpg" class="img-thumbnail" width="550" height="700">
+        </div>
         <h3 align="center">Most Prevalent Diseases</h3>
-        <div class="container">
-            <ol>
-                <li>Hypertension: 67.05%</li>
-                <li>Hyperlipidemia: 57.06%</li>
-                <li>Rheumatoid Arthritis Osteoarthritis: 44.09%</li>
-                <li>Ischemic Heart Disease: 39.61%</li>
-                <li>Diabetes: 36.28%</li>
-            </ol>
+        <div align="center" class="container">
+                {% for row in top_disease %}
+                <p style="font-size: 16px">{{ row[0] }}: {{ row[1] }}%</p>
+                {% endfor %}
+
         </div>
     </div>
     <div id="body"></div>
@@ -101,9 +101,9 @@
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script>
-            var margin = {top: 40, right: 0, bottom: 30, left: 350},
-                width = 1700 - margin.left - margin.right,
-                height = 700 - margin.top - margin.bottom;
+            var margin = {top: 40, right: 0, bottom: 30, left: 250},
+                width = 1500 - margin.left - margin.right,
+                height = 600 - margin.top - margin.bottom;
 
             var formatPercent = d3.format(".0%");
 

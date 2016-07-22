@@ -311,4 +311,4 @@ def download():
 
 
 #main
-init_db()
+# init_db()

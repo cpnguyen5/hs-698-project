@@ -12,11 +12,14 @@
       padding-top:20px;
     }
     .bg-1 {
-        background-color: #6E658C;
+        background-color: #A2A3A0;
         color: #ffffff;
     }
     #title {
         color: #000000
+    }
+    li {
+        font-size: 16px
     }
     body {
       font: 15px sans-serif;
@@ -49,7 +52,7 @@
 
     path {  stroke: #fff; }
     path:hover {  opacity:0.9; }
-    rect:hover {  fill:purple; }
+    rect:hover {  fill:grey; }
     .axis {  font: 20px sans-serif; }
     .legend tr{    border-bottom:1px solid grey; }
     .legend tr:first-child{    border-top:1px solid grey; }
@@ -76,27 +79,171 @@
         align:right;
         width:100px;
     }
+
+
+<!---->
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .bar {
+      fill: steelblue;
+    }
+
+    .x.axis path {
+      display: none;
+    }
 </style>
 <body>
-        <script src="//d3js.org/d3.v3.min.js"></script>
+    <script src="//d3js.org/d3.v3.min.js"></script>
     <div class="jumbotron">
         <h1 align="center">CMS Costs</h1>
-        <!--<p class="text-center">Links below provide detailed view of the respective dataset.</p>-->
         <div align="center">
-            <div class="container-fluid">
-                <a href="/cost/demo" class="btn btn-info btn-lg" role="button">Demographics Implications</a>
-
-            </div>
+            <img align="center" src="static/img/health_costs.jpg" class="img-thumbnail" width="304" height="336">
         </div>
+    <div class="container">
         <h2 align="center">Background</h2>
+        <p style="font-size: 18px" class="text-center"> The CMS Provider Utilization and Payment dataset provides
+            information on the services and procedures provided to beneficiaries by healthcare physicians and clinicians
+            under the Medicaid & Medicare programs. Important information include provider <strong>utilization</strong>,
+            <strong>costs</strong> organized by a unique National Provider Identifier (NPI), Healthcare Common Procedure
+            Coding System (HCPCS), and place of service.</p>
+        <h4>Important Notes:</h4>
+        <ul class="list">
+            <li>The dataset provides insight on the <strong>quality of care</strong>(cost-effective - best care at the
+                minimal cost).</li>
+            <li>The standardized costs are analyzed for this effort, as they have been adjusted to remove any
+                geographic differences (e.g. local wages and input prices) in order to ensure Medicare payments are
+                comparable across locations. The differences reflect variation in factors such as physician's practice
+                patterns and beneficiaries' ability and willingness to obtain care.</li>
+        </ul>
+        <div id="body"></div>
 
+        <h3 align="center">Further Analyses</h3>
+            <p style="font-size: 16px" class="text-center"> View the following links for further exploration of the
+                impacts of healthcare costs under CMS.</p>
+            <ul class="list">
+                <li><strong>Demographics: </strong> The section observes any relationship that may exist between
+                    the demographics of the surveyed population and healthcare costs.</li>
+                <li><strong>HCPCS Provider Utilization: </strong> The section observes how providers utilize services
+                    and procedures under CMS.</li>
+            </ul>
     </div>
+        <div class="container" align="center">
+            <a href="/cost/demo" class="btn btn-info btn-lg" role="button">Demographics Implications</a>
+            <a href="/cost/hcpcs" class="btn btn-info btn-lg" role="button">HCPCS Provider Utilization</a>
+        </div>
+    </div>
+    <!--<div class="container">-->
+        <!--<h1 align="center">Total CMS Costs by Facility</h1>-->
+        <!--<script src="//d3js.org/d3.v3.min.js"></script>-->
+        <!--<script>-->
+            <!--var margin = {top: 20, right: 20, bottom: 30, left: 40},-->
+            <!--width = 960 - margin.left - margin.right,-->
+            <!--height = 500 - margin.top - margin.bottom;-->
+
+            <!--var x0 = d3.scale.ordinal()-->
+                <!--.rangeRoundBands([0, width], .1);-->
+
+            <!--var x1 = d3.scale.ordinal();-->
+
+            <!--var y = d3.scale.linear()-->
+                <!--.range([height, 0]);-->
+
+            <!--var color = d3.scale.ordinal()-->
+                <!--.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);-->
+
+            <!--var xAxis = d3.svg.axis()-->
+                <!--.scale(x0)-->
+                <!--.orient("bottom");-->
+
+            <!--var yAxis = d3.svg.axis()-->
+                <!--.scale(y)-->
+                <!--.orient("left")-->
+                <!--.tickFormat(d3.format(".2s"));-->
+
+            <!--var svg = d3.select("body").append("svg")-->
+                <!--.attr("width", width + margin.left + margin.right)-->
+                <!--.attr("height", height + margin.top + margin.bottom)-->
+              <!--.append("g")-->
+                <!--.attr("transform", "translate(" + margin.left + "," + margin.top + ")");-->
+
+            <!--d3.csv("{{ facil_file }}", function(error, data) {-->
+              <!--if (error) throw error;-->
+
+              <!--var ageNames = d3.keys(data[0]).filter(function(key) { return key !== "Facility"; });-->
+
+              <!--data.forEach(function(d) {-->
+                <!--d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });-->
+              <!--});-->
+
+              <!--x0.domain(data.map(function(d) { return d.Facility; }));-->
+              <!--x1.domain(ageNames).rangeRoundBands([0, x0.rangeBand()]);-->
+              <!--y.domain([0, d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);-->
+
+              <!--svg.append("g")-->
+                  <!--.attr("class", "x axis")-->
+                  <!--.attr("transform", "translate(0," + height + ")")-->
+                  <!--.call(xAxis);-->
+
+              <!--svg.append("g")-->
+                  <!--.attr("class", "y axis")-->
+                  <!--.call(yAxis)-->
+                <!--.append("text")-->
+                  <!--.attr("transform", "rotate(-90)")-->
+                  <!--.attr("y", 6)-->
+                  <!--.attr("dy", ".71em")-->
+                  <!--.style("text-anchor", "end")-->
+                  <!--.text("Population");-->
+
+              <!--var facility = svg.selectAll(".facility")-->
+                  <!--.data(data)-->
+                <!--.enter().append("g")-->
+                  <!--.attr("class", "facility")-->
+                  <!--.attr("transform", function(d) { return "translate(" + x0(d.Facility) + ",0)"; });-->
+
+              <!--facility.selectAll("rect")-->
+                  <!--.data(function(d) { return d.ages; })-->
+                <!--.enter().append("rect")-->
+                  <!--.attr("width", x1.rangeBand())-->
+                  <!--.attr("x", function(d) { return x1(d.name); })-->
+                  <!--.attr("y", function(d) { return y(d.value); })-->
+                  <!--.attr("height", function(d) { return height - y(d.value); })-->
+                  <!--.style("fill", function(d) { return color(d.name); });-->
+
+              <!--var legend = svg.selectAll(".legend")-->
+                  <!--.data(ageNames.slice().reverse())-->
+                <!--.enter().append("g")-->
+                  <!--.attr("class", "legend")-->
+                  <!--.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });-->
+
+              <!--legend.append("rect")-->
+                  <!--.attr("x", width - 18)-->
+                  <!--.attr("width", 18)-->
+                  <!--.attr("height", 18)-->
+                  <!--.style("fill", color);-->
+
+              <!--legend.append("text")-->
+                  <!--.attr("x", width - 24)-->
+                  <!--.attr("y", 9)-->
+                  <!--.attr("dy", ".35em")-->
+                  <!--.style("text-anchor", "end")-->
+                  <!--.text(function(d) { return d; });-->
+
+            <!--});-->
+
+            <!--</script>-->
+    <!--</div>-->
+
     <div class="container-fluid bg-1">
         <div class="container">
-        <h1 align="center">CMS Costs by State</h1>
-        <ul class="list">
-            <li>Max Mean Median Mode?</li>
-        </ul>
+        <h1 align="center">Average CMS Costs by State</h1>
+            <p style="font-size: 18px" class="text-center"> Plot displays average healthcare costs for services and
+                procedures provided to beneficiaries under the Medicare and Medicaid programs. The costs were
+                standardized to remove geographic differences in payment rates for individual services.</p>
         </div>
     </div>
     <div id="body"></div>
@@ -168,10 +315,10 @@
         <div class="container">
             <h4 id="title">Takeaways: </h4>
             <ul class="list">
-                <li>For all cost-leading states, <strong>>50%</strong> of the costs are attributed from the elderly
-                    population. Specifically the age groups <strong>65-74</strong> and <strong>75-84</strong></li>
-                <li>The age group between <strong>65-74</strong> is consistently the leading cohort in payments for
-                    healthcare services and procedures provided by clinicians under Medicare and Medicaid programs.</li>
+                <li>For all cost-leading states, <strong>>50%</strong> of the average costs are attributed from the
+                    elderly population. Specifically the age groups <strong>65-74</strong> and <strong>75-84</strong>.</li>
+                <li>The age group between <strong>65-74</strong> is consistently the leading cohort in average payments
+                    for healthcare services and procedures provided by clinicians under Medicare and Medicaid programs.</li>
             </ul>
         </div>
     </div>

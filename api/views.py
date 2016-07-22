@@ -341,14 +341,16 @@ def cost():
     #     else:
     #         row = ('office',) + row
     #     rows_facil += [row]
-    # place_costs_df = pd.DataFrame(rows_facil, columns=['Facility','total_cost', 'total_medical_cost', 'total_drug_cost'])
+    # facil_data = np.array(rows_facil).transpose()[1:, :]
+    # costs = np.array(['Medicare_Amount ($)', 'Medical_Amount ($)', 'Drug_Amount ($)'])
+    # facil_costs = np.column_stack((facil_data, costs))
+    # place_costs_df = pd.DataFrame(facil_costs, columns=['facility', 'office', 'costs'])
     # #bar chart
     # facil_path = os.path.join(get_abs_path(), 'static', 'tmp', 'cost_facility.csv')
     # place_costs_df.to_csv(facil_path, sep=',', index=False)
     return render_template("state_cost.html",
                            data_file = url_for('static', filename='tmp/state_cost.csv'), data=data)
                            # facil_file=url_for('static', filename='tmp/cost_facility.csv'))
-
 
 
 @app.route('/cost/demo')
@@ -472,7 +474,7 @@ def demographics():
            'num_native_am', 'num_other_race', 'num_female', 'num_male']
     demo_df = pd.DataFrame(rows_heatmap, columns=col)
     demo_corr = demo_df.corr()
-
+    plt.figure()
     sns.set(style='white')
     mask = np.zeros_like(demo_corr, dtype=bool)
     mask[np.triu_indices_from(mask)] = True
@@ -481,6 +483,7 @@ def demographics():
     heatmap_plot = sns.heatmap(demo_corr, mask=mask, cmap=cmap, ax=ax)
     heatmap_path = os.path.join(get_abs_path(), 'static', 'tmp', 'heatmap_demo.png')
     heatmap_plot.figure.savefig(heatmap_path, transparent=True)
+    plt.close()
     return render_template("cost_demo.html", costs_age=costs_age, age_ratio=age_ratio,
                            costs_race=costs_race, race_ratio=race_ratio,
                            costs_sex=costs_sex, sex_ratio=sex_ratio,

@@ -11,6 +11,10 @@
         background-color: #1abc9c; /* Green */
         color: #ffffff;
     }
+    .bg-2 {
+        background-color: #A2A3A0;
+        color: #ffffff;
+    }
     #title {
         color: #555555
     }
@@ -29,8 +33,12 @@
     }
     #body {
       padding:20px;
-      padding-bottom:50px;
+      padding-bottom:20px;
     }
+    #bodya {
+      padding-top:10px;
+    }
+
     <style>
     body {
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -315,7 +323,7 @@
             </ul>
         <img src={{ chist_fig }} width="1200" height="700" align="center"></img>
     </div>
-
+    <div id="body"></div>
     <div class="container-fluid bg-1">
         <div class="container">
         <h1 align="center">Information</h1>
@@ -355,8 +363,7 @@
         </div>
         <div id="body"></div>
     </div>
-
-
+    <div id="body"></div>
     <div class="container text-center">
         <h2>Average CMS Costs from Cancer Beneficiaries per State</h2>
         <p>The state with the highest costs for services & procedures provided under CMS is <strong>{{ max_state[0] }}
@@ -503,6 +510,43 @@
                 </table>
             </div>
     </div>
+    <div id="body"></div>
+    <div class="container-fluid bg-2"><h2 align="center">Appendix</h2></div>
+    <div id="bodya"></div>
+    <div class="container text-center">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Variable Name</th>
+                        <th>Description</th>
+                        <th>Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td align="center">percent_of_beneficiaries_identified_with_cancer</td>
+                        <td align="center">Percent of beneficiaries meeting the CCW chronic condition algorithms for
+                            cancer. Includes breast, colorectal, lung, and prostate cancer.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">provider_state_code</td>
+                        <td align="center">State where provider is located.</td>
+                        <td align="center">categorical</td>
+                    </tr>
+                    <tr>
+                        <td align="center">total_medicare_standardized_payment_amount</td>
+                        <td align="center">Total amount paid for overall CMS services after deduction of deductible
+                            and coinsurance. Standardized to remove geographic differences in payment rates and makes
+                            payments comparable.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+        </div>
+
   </body>
     {% endblock %}
 </html>

@@ -11,24 +11,38 @@
         background-color: #A9ABAA;
         color: #ffffff;
     }
+    .bg-2 {
+        background-color: #A2A3A0;
+        color: #ffffff;
+    }
     p {
-        font-size: 16px;
+        font-size: 20px;
+    }
+    li {
+        font-size: 18px;
     }
     #title {
         color: #000000
+    }
+    #body {
+      padding:20px;
+      padding-bottom:10px;
+    }
+    #bodya {
+      padding-top:10px;
     }
 </style>
 <body>
     <div class="jumbotron">
         <h1 align="center">Cancer Risk Factors</h1>
-        <div class="container text-center"
-            <p>This section explores potential cancer risk factors present in the CMS dataset. Primarily, the demographics
-                will be examined to identify any trends amongst certain cohorts for the prevalence of cancer.</p>
+        <div class="container text-center">
+            <h3>This section explores potential cancer risk factors present in the CMS dataset. Primarily, the demographics
+                will be examined to identify any trends amongst certain cohorts for the prevalence of cancer.</h3>
     </div>
     <div align="center">
         <img align="center" src="{{ risk_img }}" class="img-circle" width="500" height="250">
     </div>
-    <div id="body">
+    <div id="body"></div>
         <div align="center">
             <div class="container-fluid">
             <a href="/cancer" class="btn btn-info btn-lg" role="button">Return to Cancer Overview</a>
@@ -36,9 +50,9 @@
         </div>
     </div>
     <div class="container-fluid bg-1">
-        <h2 id="title" align="center">Number of Patients Diagnosed with Cancer</h2>
+        <h1 id="title" align="center">Number of Patients Diagnosed with Cancer</h1>
         <div class="container">
-            <h3>Age</h3>
+            <h2>Age</h2>
             <p id="title">The distribution of cancer prevalence is explored across each age group of the CMS dataset.</p>
             <ul class="list">
                 <li>The median for the number of beneficiaries with cancer is approximately uniform across all age groups.</li>
@@ -48,7 +62,7 @@
                 <li>Age groups <strong><65</strong> and <strong>>84</strong> have a smaller interquartile range, suggesting
                     that the prevalence values are in more agreement or consistent within these groups.</li>
             </ul>
-            <h3>Race</h3>
+            <h2>Race</h2>
             <p id="title">The distribution of cancer prevalence is explored across each race/ethnicity group.</p>
             <ul class="list">
                 <li><strong>Non-hispanic White</strong> beneficiaries have an exceptionally larger interquartile range
@@ -62,13 +76,13 @@
             </ul>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" align="center">
         <img align="center" src="{{ age_boxfig }}" width="800" height="550">
         <img align="center" src="{{ race_boxfig }}" width="800" height="550">
     </div>
-
+    <div id="body"></div>
     <div class="container-fluid bg-1">
-        <h2 id="title" align="center">Cancer Mortality Rate by Race</h2>
+        <h1 id="title" align="center">Cancer Mortality Rate by Race</h1>
         <div class="container">
             <p id="title">The supplementary Big Cities Health Coalition dataset is used to examined the mortality rate of cancer in each
                 major metropolitan. The mortality rates will provide a more in-depth understanding of the effects of cancer
@@ -82,7 +96,7 @@
             </ul>
         </div>
         <div class="container">
-            <h3>Annual Average Mortality Rate</h3>
+            <h2>Annual Average Mortality Rate</h2>
             <p id="title">The trajectory of cancer mortality rates for each race.</p>
             <ul class="list">
                 <li>The Big Cities Health Coalition dataset shows that <strong>African Americans</strong> have higher
@@ -94,7 +108,7 @@
                     to their lack of representation in the previous surveyed years.</li>
 
             </ul>
-            <h3>Overall Mortality Rate</h3>
+            <h2>Overall Mortality Rate</h2>
             <p id="title">The overall average mortality rate compared across the race/ethnicity groups.</p>
             <ul class="list">
                 <li><strong>African Americans</strong>lead all other racial groups for highest mortality rate from cancer
@@ -105,11 +119,91 @@
         </div>
 
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid" align="center">
         <img align="center" src="{{ mort_fig }}" width="800" height="550">
         <img align="center" src="{{ mortbar_fig }}" width="800" height="550">
-
     </div>
+
+    <div id="body"></div>
+    <div class="container-fluid bg-2"><h2 align="center">Appendix</h2></div>
+    <div id="bodya"></div>
+    <div class="container text-center">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Variable Name</th>
+                        <th>Description</th>
+                        <th>Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td align="center">percent_of_beneficiaries_identified_with_cancer</td>
+                        <td align="center">Percent of beneficiaries meeting the CCW chronic condition algorithms for
+                            cancer. Includes breast, colorectal, lung, and prostate cancer.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_less_65</td>
+                        <td align="center">Number of beneficiaries under the age of 65.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_65_to_74</td>
+                        <td align="center">Number of beneficiaries between the ages of 65 and 74.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_75_to_84</td>
+                        <td align="center">Number of beneficiaries between the ages of 75 and 84.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_greater_84</td>
+                        <td align="center">Number of beneficiaries over the age of 84.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_non_hispanic_white_beneficiaries</td>
+                        <td align="center">Number of non-Hispanic white beneficiaries.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_african_american_beneficiaries</td>
+                        <td align="center">Number of non-Hispanic black or African American beneficiaries.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_asian_pacific_islander_beneficiaries</td>
+                        <td align="center">Number of Asian Pacific Islander beneficiaries.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_hispanic_beneficiaries</td>
+                        <td align="center">Number of Hispanic beneficiaries.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">nnumber_of_american_indian_alaskan_native_beneficiaries</td>
+                        <td align="center">Number of American Indian or Alaska Native beneficiaries.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_with_race_not_elsewhere_classified</td>
+                        <td align="center">Number of beneficiaries with race not elsewhere classified.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">value (Mortality Rate)</td>
+                        <td align="center">Mortality rates for all cancers reported per 100,000 people.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+
+                </tbody>
+            </table>
+    </div>
+        </div>
 </body>
     {% endblock %}
 </html>

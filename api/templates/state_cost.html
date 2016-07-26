@@ -11,7 +11,15 @@
       padding:50px;
       padding-top:20px;
     }
+    #bodya {
+      padding-top:10px;
+    }
+
     .bg-1 {
+        background-color: #A2A3A0;
+        color: #ffffff;
+    }
+    .bg-2 {
         background-color: #A2A3A0;
         color: #ffffff;
     }
@@ -137,106 +145,7 @@
             <a href="/cost/hcpcs" class="btn btn-info btn-lg" role="button">HCPCS Provider Utilization</a>
         </div>
     </div>
-    <!--<div class="container">-->
-        <!--<h1 align="center">Total CMS Costs by Facility</h1>-->
-        <!--<script src="//d3js.org/d3.v3.min.js"></script>-->
-        <!--<script>-->
-            <!--var margin = {top: 20, right: 20, bottom: 30, left: 40},-->
-            <!--width = 960 - margin.left - margin.right,-->
-            <!--height = 500 - margin.top - margin.bottom;-->
 
-            <!--var x0 = d3.scale.ordinal()-->
-                <!--.rangeRoundBands([0, width], .1);-->
-
-            <!--var x1 = d3.scale.ordinal();-->
-
-            <!--var y = d3.scale.linear()-->
-                <!--.range([height, 0]);-->
-
-            <!--var color = d3.scale.ordinal()-->
-                <!--.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);-->
-
-            <!--var xAxis = d3.svg.axis()-->
-                <!--.scale(x0)-->
-                <!--.orient("bottom");-->
-
-            <!--var yAxis = d3.svg.axis()-->
-                <!--.scale(y)-->
-                <!--.orient("left")-->
-                <!--.tickFormat(d3.format(".2s"));-->
-
-            <!--var svg = d3.select("body").append("svg")-->
-                <!--.attr("width", width + margin.left + margin.right)-->
-                <!--.attr("height", height + margin.top + margin.bottom)-->
-              <!--.append("g")-->
-                <!--.attr("transform", "translate(" + margin.left + "," + margin.top + ")");-->
-
-            <!--d3.csv("{{ facil_file }}", function(error, data) {-->
-              <!--if (error) throw error;-->
-
-              <!--var ageNames = d3.keys(data[0]).filter(function(key) { return key !== "Facility"; });-->
-
-              <!--data.forEach(function(d) {-->
-                <!--d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });-->
-              <!--});-->
-
-              <!--x0.domain(data.map(function(d) { return d.Facility; }));-->
-              <!--x1.domain(ageNames).rangeRoundBands([0, x0.rangeBand()]);-->
-              <!--y.domain([0, d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);-->
-
-              <!--svg.append("g")-->
-                  <!--.attr("class", "x axis")-->
-                  <!--.attr("transform", "translate(0," + height + ")")-->
-                  <!--.call(xAxis);-->
-
-              <!--svg.append("g")-->
-                  <!--.attr("class", "y axis")-->
-                  <!--.call(yAxis)-->
-                <!--.append("text")-->
-                  <!--.attr("transform", "rotate(-90)")-->
-                  <!--.attr("y", 6)-->
-                  <!--.attr("dy", ".71em")-->
-                  <!--.style("text-anchor", "end")-->
-                  <!--.text("Population");-->
-
-              <!--var facility = svg.selectAll(".facility")-->
-                  <!--.data(data)-->
-                <!--.enter().append("g")-->
-                  <!--.attr("class", "facility")-->
-                  <!--.attr("transform", function(d) { return "translate(" + x0(d.Facility) + ",0)"; });-->
-
-              <!--facility.selectAll("rect")-->
-                  <!--.data(function(d) { return d.ages; })-->
-                <!--.enter().append("rect")-->
-                  <!--.attr("width", x1.rangeBand())-->
-                  <!--.attr("x", function(d) { return x1(d.name); })-->
-                  <!--.attr("y", function(d) { return y(d.value); })-->
-                  <!--.attr("height", function(d) { return height - y(d.value); })-->
-                  <!--.style("fill", function(d) { return color(d.name); });-->
-
-              <!--var legend = svg.selectAll(".legend")-->
-                  <!--.data(ageNames.slice().reverse())-->
-                <!--.enter().append("g")-->
-                  <!--.attr("class", "legend")-->
-                  <!--.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });-->
-
-              <!--legend.append("rect")-->
-                  <!--.attr("x", width - 18)-->
-                  <!--.attr("width", 18)-->
-                  <!--.attr("height", 18)-->
-                  <!--.style("fill", color);-->
-
-              <!--legend.append("text")-->
-                  <!--.attr("x", width - 24)-->
-                  <!--.attr("y", 9)-->
-                  <!--.attr("dy", ".35em")-->
-                  <!--.style("text-anchor", "end")-->
-                  <!--.text(function(d) { return d; });-->
-
-            <!--});-->
-
-            <!--</script>-->
-    <!--</div>-->
 
     <div class="container-fluid bg-1">
         <div class="container">
@@ -538,6 +447,101 @@
         </div>
     </div>
     </div>
+
+    <div class="container-fluid bg-1">
+        <h1 align="center">Average Costs by Facility/Location</h1>
+        <div class="container">
+            <h4 id="title">Takeaways: </h4>
+            <ul class="list">
+                <li>Facilities accounted for <strong>{{ num_f[0] }}%</strong> of all CMS-related services. On the
+                    contrary, offices or practices accounted for <strong>{{ num_o[0] }}%</strong> of CMS services.</li>
+                <li>Across all CMS cost types (all-inclusive, medical-related, & drug-related), majority of the services
+                    related to Medicare & Medicaid were conducted at offices/practices.</li>
+                <li>The mean average cost across all cost types was <strong>${{ mean[0][0] }}</strong> (stand. deviation
+                    = +/- {{ std[0][0] }} and <strong>${{ mean[1][0] }}</strong> (stand. deviation = +/- {{ std[1][0] }}
+                    for facilities and offices, respectively.</li>
+            </ul>
+        </div>
+        </div>
+    <div align="center">
+            <h3>Average CMS Costs by Facility Type <small>(Facility vs. Office)</small></h3>
+            <img align="center" src="{{ facil_fig }}" width="800" height="550">
+    </div>
+    <div id="body"></div>
+    <div class="container-fluid bg-2"><h2 align="center">Appendix</h2></div>
+    <div id="bodya"></div>
+    <div class="container text-center">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Variable Name</th>
+                        <th>Description</th>
+                        <th>Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td align="center">provider_state_code</td>
+                        <td align="center">State where provider is located.</td>
+                        <td align="center">categorical</td>
+                    </tr>
+                    <tr>
+                        <td align="center">total_medicare_standardized_payment_amount</td>
+                        <td align="center">Total amount paid for overall CMS services after deduction of deductible
+                            and coinsurance. Standardized to remove geographic differences in payment rates and makes
+                            payments comparable.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">total_medical_medicare_standardized_payment_amount</td>
+                        <td align="center">Total amount paid for medical (non-ASP) service after deduction of deductible
+                            and coinsurance. Standardized to remove geographic differences in payment rates and makes
+                            payments comparable.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">total_drug_medicare_standardized_payment_amount</td>
+                        <td align="center">Total amount paid for drug service after deduction of deductible and
+                            coinsurance. Standardized to remove geographic differences in payment rates and makes
+                            payments comparable.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_less_65</td>
+                        <td align="center">Number of beneficiaries under the age of 65.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_65_to_74</td>
+                        <td align="center">Number of beneficiaries between the ages of 65 and 74.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_75_to_84</td>
+                        <td align="center">Number of beneficiaries between the ages of 75 and 84.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_beneficiaries_age_greater_84</td>
+                        <td align="center">Number of beneficiaries over the age of 84.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">number_of_services</td>
+                        <td align="center">Number of total services.</td>
+                        <td align="center">continuous/numeric</td>
+                    </tr>
+                    <tr>
+                        <td align="center">place_of_service</td>
+                        <td align="center">Identifies whether place of service submitted on the claims is a facility or
+                                non-facility (generally, offices).</td>
+                        <td align="center">categorical</td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+        </div>
 </body>
     {% endblock %}
 </html>

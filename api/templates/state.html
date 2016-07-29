@@ -82,12 +82,12 @@
 </style>
 <body>
     <div class="jumbotron">
-        <h1 align="center">CMS Beneficiaries: United States Disease Prevalence</h1>
-        <!--<p class="text-center">Links below provide detailed view of the respective dataset.</p>-->
+        <h1 align="center">Disease/Chronic Conditions Prevalence</h1>
+        <h2 align="center">Amongst CMS Beneficiaries in the United States</h2>
         <div align="center">
         <img align="center" src="static/img/prevalence.jpg" class="img-thumbnail" width="550" height="700">
         </div>
-        <h3 align="center">Most Prevalent Diseases</h3>
+        <h3 align="center"><strong>Top Prevalent Diseases</strong></h3>
         <div align="center" class="container">
                 {% for row in top_disease %}
                 <p style="font-size: 16px">{{ row[0] }}: {{ row[1] }}%</p>
@@ -101,7 +101,7 @@
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script>
-            var margin = {top: 40, right: 0, bottom: 30, left: 250},
+            var margin = {top: 40, right: 0, bottom: 30, left: 175},
                 width = 1700 - margin.left - margin.right,
                 height = 600 - margin.top - margin.bottom;
 

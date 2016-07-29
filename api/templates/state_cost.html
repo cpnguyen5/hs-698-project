@@ -27,7 +27,7 @@
         color: #000000
     }
     li {
-        font-size: 16px
+        font-size: 18px
     }
     body {
       font: 15px sans-serif;
@@ -108,7 +108,7 @@
 <body>
     <script src="//d3js.org/d3.v3.min.js"></script>
     <div class="jumbotron">
-        <h1 align="center">CMS Costs</h1>
+        <h1 align="center">Costs of CMS Fee-for-Service Programs</h1>
         <div align="center">
             <img align="center" src="static/img/health_costs.jpg" class="img-thumbnail" width="304" height="336">
         </div>
@@ -119,7 +119,7 @@
             under the Medicaid & Medicare programs. Important information include provider <strong>utilization</strong>,
             <strong>costs</strong> organized by a unique National Provider Identifier (NPI), Healthcare Common Procedure
             Coding System (HCPCS), and place of service.</p>
-        <h4>Important Notes:</h4>
+        <h3>Important Notes:</h3>
         <ul class="list">
             <li>The dataset provides insight on the <strong>quality of care</strong>(cost-effective - best care at the
                 minimal cost).</li>
@@ -130,8 +130,8 @@
         </ul>
         <div id="body"></div>
 
-        <h3 align="center">Further Analyses</h3>
-            <p style="font-size: 16px" class="text-center"> View the following links for further exploration of the
+        <h2 align="center">Further Analyses</h2>
+            <p style="font-size: 18px" class="text-center"> View the following links for further exploration of the
                 impacts of healthcare costs under CMS.</p>
             <ul class="list">
                 <li><strong>Demographics: </strong> The section observes any relationship that may exist between
@@ -150,7 +150,7 @@
     <div class="container-fluid bg-1">
         <div class="container">
         <h1 align="center">Average CMS Costs by State</h1>
-            <p style="font-size: 18px" class="text-center"> Plot displays average healthcare costs for services and
+            <p id="title" style="font-size: 18px" class="text-center"> Plot displays average healthcare costs for services and
                 procedures provided to beneficiaries under the Medicare and Medicaid programs. The costs were
                 standardized to remove geographic differences in payment rates for individual services.</p>
         </div>
@@ -224,8 +224,9 @@
         <div class="container">
             <h4 id="title">Takeaways: </h4>
             <ul class="list">
-                <li>For all cost-leading states, <strong>>50%</strong> of the average costs are attributed from the
-                    elderly population. Specifically the age groups <strong>65-74</strong> and <strong>75-84</strong>.</li>
+                <li>For all cost-leading states, <strong id="title">>50%</strong> of the average costs are attributed
+                    from the elderly population. Specifically the age groups <strong>65-74</strong> and <strong>75-84
+                    </strong>.</li>
                 <li>The age group between <strong>65-74</strong> is consistently the leading cohort in average payments
                     for healthcare services and procedures provided by clinicians under Medicare and Medicaid programs.</li>
             </ul>
@@ -453,22 +454,23 @@
         <div class="container">
             <h4 id="title">Takeaways: </h4>
             <ul class="list">
-                <li>Facilities accounted for <strong>{{ num_f[0] }}%</strong> of all CMS-related services. On the
-                    contrary, offices or practices accounted for <strong>{{ num_o[0] }}%</strong> of CMS services.</li>
+                <li>Facilities accounted for <strong id="title">{{ num_f[0] }}%</strong> of all CMS-related services. On
+                    the contrary, offices or practices accounted for <strong id="title">{{ num_o[0] }}%</strong> of CMS
+                    services.</li>
                 <li>Across all CMS cost types (all-inclusive, medical-related, & drug-related), majority of the services
                     related to Medicare & Medicaid were conducted at offices/practices.</li>
-                <li>The mean average cost across all cost types was <strong>${{ mean[0][0] }}</strong> (stand. deviation
-                    = +/- {{ std[0][0] }} and <strong>${{ mean[1][0] }}</strong> (stand. deviation = +/- {{ std[1][0] }}
-                    for facilities and offices, respectively.</li>
+                <li>The mean average cost across all cost types was <strong id="title">${{ mean[0][0] }}</strong>
+                    (stand. deviation = +/- {{ std[0][0] }}) and <strong id="title">${{ mean[1][0] }}</strong>
+                    (stand. deviation = +/- {{ std[1][0] }}) for facilities and offices, respectively.</li>
             </ul>
         </div>
         </div>
     <div align="center">
-            <h3>Average CMS Costs by Facility Type <small>(Facility vs. Office)</small></h3>
-            <img align="center" src="{{ facil_fig }}" width="800" height="550">
+            <h3>Facility vs. Non-Facility (Office)</h3>
+            <img align="center" src="{{ facil_fig }}" width="1200" height="750">
     </div>
     <div id="body"></div>
-    <div class="container-fluid bg-2"><h2 align="center">Appendix</h2></div>
+    <div id="title" class="container-fluid bg-2"><h2 align="center">Appendix</h2></div>
     <div id="bodya"></div>
     <div class="container text-center">
         <div class="table-responsive">

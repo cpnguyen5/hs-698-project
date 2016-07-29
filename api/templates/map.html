@@ -29,7 +29,7 @@
       font-size: 16px
     }
     #sub {
-        font-size: 16px
+        font-size: 20px
     }
     #body {
       padding:20px;
@@ -74,7 +74,7 @@
 </style>
 <body>
     <div class="jumbotron">
-        <h1 align="center">CMS Beneficiaries: Cancer Prevalence</h1>
+        <h1 align="center">Case Study: Cancer Prevalence</h1>
         <h2 align="center">Interactive United States Map</h2>
         <p class="text-center">Please hover over interactive United States map to view cancer prevalence for each
             respective state.</p>
@@ -335,8 +335,8 @@
                     <li> Elderly people are 10 times more likely to be diagnosed with cancer, regardless of race or ethnicity.</li>
                     <li>Medicare beneficiaries with cancer have higher annual out-of-pocket costs (<strong>$1,500</strong>)
                         than beneficiaries without the disease.</li>
-                    <li>In 2011, Medicare payments for cancer-related treatment totaled $34.4 billion, 10% of Medicare
-                        fee-for-service dollars</li>
+                    <li>In 2011, Medicare payments for cancer-related treatment totaled $34.4 billion, <strong>10%
+                        </strong> of Medicare fee-for-service dollars</li>
                     <li> Medicare is of high importance in providing a lifeline of affordable and quality health care coverage.
                         There is an important relationship between Medicare and cancer disease -- financial impact on CMS
                         programs and beneficiaries (out-of-pocket expenses).</li>
@@ -357,7 +357,8 @@
             <p>Risks were identified and determined by epidemiology studies, in which large groups of patients diagnosed
                 with cancer were compared to groups that did not develop the disease.</p>
 
-            <div align="center"><p>View the following page for an in-depth exploration of potential risk factors.</p>
+            <div align="center" id="title"><p><strong>View the following page for an in-depth exploration of potential
+                risk factors.</strong></p>
                 <a href="/cancer/risk" class="btn btn-info btn-lg" role="button">Risk Factors</a>
             </div>
         </div>
@@ -366,10 +367,10 @@
     <div id="body"></div>
     <div class="container text-center">
         <h2>Average CMS Costs from Cancer Beneficiaries per State</h2>
-        <p>The state with the highest costs for services & procedures provided under CMS is <strong>{{ max_state[0] }}
-            </strong>with an average cost of <strong>${{ max_state[1] }}</strong>.</p>
-        <p>The state with the lowest costs for services & procedures provided under CMS is <strong>{{ min_state[0] }}
-            </strong>with an average cost of <strong>${{ min_state[1] }}</strong>.</p>
+        <p>The state with the <strong><em>highest</em></strong> costs for services & procedures provided under CMS is
+            <strong>{{ max_state[0] }} </strong>with an average cost of <strong>${{ max_state[1] }}</strong>.</p>
+        <p>The state with the <strong><em>lowest</em></strong> costs for services & procedures provided under CMS is
+            <strong>{{ min_state[0] }}</strong>with an average cost of <strong>${{ min_state[1] }}</strong>.</p>
     </div>
     <div class="container text-right">
         <label><input type="checkbox"> Sort values</label>

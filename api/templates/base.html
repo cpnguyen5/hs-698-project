@@ -18,6 +18,7 @@
     }
     .footer {
       position: static;
+      font-size: 16px;
       bottom: 0;
       width: 100%;
       /* Set the fixed height of the footer here */
@@ -39,21 +40,40 @@
                       <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span>  Home</a>
                   </div>
                   <ul class="nav navbar-nav">
-                      <li id="font"><a href="/data">Data</a></li>
-                      <!--<li class="dropdown">-->
-                          <!--<a href="/data" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"-->
-                             <!--aria-expanded="false">Data <span class="caret"></span></a>-->
-                          <!--<ul class="dropdown-menu">-->
-                              <!--<li><a href='/data/report')>Report Dataset</a></li>-->
-                              <!--<li role="separator" class="divider"></li>-->
-                              <!--<li><a href='/data/puf')>PUF Dataset</a></li>-->
-                              <!--<li role="separator" class="divider"></li>-->
-                              <!--<li><a href='/data/cancer')>Cancer Dataset</a></li>-->
-                          <!--</ul>-->
-                      <!--</li>-->
+                      <li class="dropdown">
+                          <a id="font" href="/data" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                             aria-expanded="false">Data<span class="caret"></span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href="/data">Main Page</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/data/report">Report Dataset</a></li>
+                            <li><a href="/data/puf">PUF Dataset</a></li>
+                            <li><a href="/data/cancer">Cancer Dataset</a></li>
+                          </ul>
+                        </li>
                       <li id="font"><a href="/prevalence">Prevalence</a></li>
-                      <li id="font"><a href="/cost">Cost</a></li>
-                      <li id="font"><a href="/cancer">Cancer</a></li>
+                      <li class="dropdown">
+                          <a id="font" href="/cost" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                             aria-expanded="false">Cost<span class="caret"></span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href="/cost">Main Page</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/cost/demo">Demographics</a></li>
+                            <li><a href="/cost/hcpcs">HCPCS Services & Procedures</a></li>
+                          </ul>
+                        </li>
+                      <li class="dropdown">
+                          <a id="font" href="/cancer" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                             aria-expanded="false">Cancer<span class="caret"></span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li><a href="/cancer">Main Page</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/cancer/risk">Risk Factors</a></li>
+                          </ul>
+                        </li>
                   </ul>
               </div>
             </nav>
@@ -64,12 +84,13 @@
         <div class="footer">
             <div class="container text-center">
                 <h5><strong>Contact Information</strong></h5>
-                    <p align="center">
+                    <p align="center" style="font-size: 16px">
                         University of San Francisco <br>
                         School of Nursing and Health Professions Health Informatics<br>
                         HS 698 <br>
                     </p>
-                    <p><span class="glyphicon glyphicon-envelope"></span> cpnguyen5@dons.usfca.edu</p>
+                    <p style="font-size: 16px"><span class="glyphicon glyphicon-envelope"></span>
+                        cpnguyen5@dons.usfca.edu</p>
 
                     <a href="https://github.com/cpnguyen5/hs-698-project">
                         <i class="fa fa-github fa-5x"></i>

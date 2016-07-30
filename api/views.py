@@ -30,7 +30,6 @@ def get_abs_path():
 def get_db():
     db_path=os.path.join(project.get_path(),'cms3.db')
     if not os.path.isfile(db_path):
-        # project.create_table() #sqlite3
         project.init_db() #sqlalchemy
     return db_path
 
@@ -110,6 +109,8 @@ def prevalence():
     tsv_path = os.path.join(get_abs_path(), 'static', 'tmp', 'overall_prev.tsv')
     overall_bar.to_csv(tsv_path, sep='\t', header=['disease', 'frequency'])
     return render_template("state.html", rows=state_avg, top_disease = top_perc,
+                           prev_js=url_for('static', filename='js/prevalence.v3.min.js'),
+                           prev_js1=url_for('static', filename='js/prev.tip.v0.6.3.js'),
                            prev_file=url_for('static', filename='tmp/overall_prev.tsv'))
 
 
@@ -172,6 +173,8 @@ def map():
                            min_state=min_state,
                            chist_fig=url_for('static', filename='tmp/cancer_dist.png'),
                            js_file=url_for('static', filename='js/datamaps.usa.min.js'),
+                           cancer_js = url_for('static', filename='js/cancer.v3.min.js'),
+                           topo_js = url_for('static', filename='js/cancer_topojson.v1.min.js'),
                            cancer_costs_file=url_for('static', filename='tmp/cancer_costs.tsv'))
 
 
@@ -383,7 +386,8 @@ def cost():
 
     return render_template("state_cost.html", num_f=num_f, num_o=num_o, mean=facil_mean, std=facil_std,
                            data_file = url_for('static', filename='tmp/state_cost.csv'), data=data,
-                           facil_fig = url_for('static', filename='tmp/facil_cost.png'))
+                           facil_fig = url_for('static', filename='tmp/facil_cost.png'),
+                           cost_js = url_for('static', filename='js/cost.v3.min.js'))
 
 
 @app.route('/cost/demo')
@@ -520,6 +524,7 @@ def demographics():
     return render_template("cost_demo.html", costs_age=costs_age, age_ratio=age_ratio,
                            costs_race=costs_race, race_ratio=race_ratio,
                            costs_sex=costs_sex, sex_ratio=sex_ratio,
+                           cost_demo_js = url_for('static', filename='js/cost_demo.v3.min.js'),
                            age_file=url_for('static', filename='tmp/cost_age.csv'),
                            race_file=url_for('static', filename='tmp/cost_race.csv'),
                            sex_file=url_for('static', filename='tmp/cost_sex.csv'),
@@ -691,150 +696,4 @@ def puf():
 def cancer():
     return render_template("cancer_data.html")
 
-
-# @app.route('/cluster')
-# def cluster():
-#
-#     result = db.session.query(Report.percent_of_beneficiaries_identified_with_cancer,
-#                             Report.number_of_beneficiaries_age_less_65, Report.number_of_beneficiaries_age_65_to_74,
-#                             Report.number_of_beneficiaries_age_75_to_84, Report.number_of_beneficiaries_age_greater_84,
-#                             Report.number_of_non_hispanic_white_beneficiaries, Report.number_of_hispanic_beneficiaries,
-#                             Report.number_of_african_american_beneficiaries,
-#                             Report.number_of_asian_pacific_islander_beneficiaries,
-#                             Report.number_of_american_indian_alaskan_native_beneficiaries,
-#                             Report.number_of_beneficiaries_with_race_not_elsewhere_classified,
-#                             Report.number_of_female_beneficiaries, Report.number_of_male_beneficiaries).all()
-#
-#     # s = select([Report])
-#     # conn = db.engine.connect()
-#     # result = conn.execute(s)
-#     data = pd.DataFrame(list(result)).select_dtypes(exclude=['object']).dropna()
-#     data = data.ix[:, data.columns != 0]
-#     data = data.as_matrix()
-#
-#     scaler = StandardScaler().fit(data)
-#     scaled = scaler.transform(data)
-#     # PCA
-#     pcomp = decomposition.PCA(n_components=2)
-#     pcomp.fit(scaled)
-#     print pcomp.n_components_
-#     components = pcomp.transform(scaled)
-#     var = pcomp.explained_variance_ratio_.sum()  # View explained var w/ debug
-#     print var
-#     # # Kmeans
-#     # model = KMeans(n_clusters=3)
-#     # model.fit(components)
-#     # labels = model.labels_
-#     #
-#     # #Filter original data by cluster labels fitted from normalized data
-#     # lst_orig = []  # Set up accumulator for arrays of clusters for original data
-#     # for i in range(model.n_clusters):
-#     #     cluster_array = components[labels == i]  # Filter original data for specified cluster label from norm data
-#     #     lst_orig += [cluster_array]  # Accumulate filtered array of specified cluster label
-#     #
-#     # sil_score = silhouette_score(components, labels)  # Silhouette Score
-#     # print sil_score
-#     #
-#     # # Plot
-#     # fig = plt.figure()
-#     # # plt.scatter(components[:, 0], components[:, 1], c=model.labels_)
-#     # plt.scatter(lst_orig[0][:, 0], lst_orig[0][:, 1], c='b', marker='x')
-#     # plt.scatter(lst_orig[1][:, 0], lst_orig[1][:, 1], c='r', marker='^')
-#     # plt.scatter(lst_orig[2][:, 0], lst_orig[2][:, 1], c='g', marker='o')
-#     # centers = plt.plot(
-#     #     [model.cluster_centers_[0, 0], model.cluster_centers_[1, 0]],
-#     #     [model.cluster_centers_[1, 0], model.cluster_centers_[1, 1]],
-#     #     'kx', c='Green'
-#     # )
-#     # # # Increse size of center points
-#     # plt.setp(centers, ms=11.0)
-#     # plt.setp(centers, mew=1.8)
-#     # # # Plot axes adjustments
-#     # axes = plt.gca()
-#     # axes.set_xlim([-7.5, 3])
-#     # axes.set_ylim([-2, 5])
-#     # plt.xlabel('PC1')
-#     # plt.ylabel('PC2')
-#     # plt.title('Clustering of PCs ({:.2f}% Var. Explained)'.format(
-#     #     var * 100
-#     # ))
-#
-#
-#
-# #     # # Generate CSV
-# #     # # cluster_data = pd.DataFrame({'pc1': components[:, 0],
-# #     # #                              'pc2': components[:, 1],
-# #     # #                              'labels': model.labels_})
-#
-#     X = StandardScaler().fit_transform(components)
-#     dbc = DBSCAN(eps = 0.5, min_samples=10).fit(X)
-#     core_samples_mask = np.zeros_like(dbc.labels_, dtype=bool)
-#     core_samples_mask[dbc.core_sample_indices_] = True
-#     print dbc.components_
-#     labels = dbc.labels_
-#     # Number of clusters in labels, ignoring noise if present.
-#     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-#     print n_clusters_
-#     print('Estimated number of clusters: %d' % n_clusters_)
-#     print("Silhouette Coefficient: %0.3f"
-#           % silhouette_score(X, labels))
-#     #plot
-#     fig = plt.figure()
-#     # Black removed and is used for noise instead.
-#     unique_labels = set(labels)
-#     colors = plt.cm.Spectral(np.linspace(0, 1, len(unique_labels)))
-#     for k, col in zip(unique_labels, colors):
-#         if k == -1:
-#             # Black used for noise.
-#             col = 'k'
-#
-#         class_member_mask = (labels == k)
-#
-#         xy = X[class_member_mask & core_samples_mask]
-#         plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,
-#                  markeredgecolor='k', markersize=14)
-#
-#         xy = X[class_member_mask & core_samples_mask]
-#         plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=col,
-#                  markeredgecolor='k', markersize=6)
-#
-#     plt.title('Estimated number of clusters: %d' % n_clusters_)
-#     fig_path = os.path.join(get_abs_path(), 'static', 'tmp', 'cluster.png')
-#     fig.savefig(fig_path)
-#
-#     # # K-means Clustering -- Feature Space
-#     # #Data normalization/scaling
-#     # scaler = StandardScaler().fit(data) #scaler object
-#     # norm_data = scaler.transform(data) #transformed normalized data
-#     #
-#     # model = KMeans(n_clusters=2)  # instance of k-means clustering model
-#     # model = model.fit(norm_data)  # Fit model to normalized data to provide cluster labeling of data
-#     # n_clusters = model.n_clusters  # number of clusters
-#     # labels = model.labels_  # cluster labels based on normalized data
-#     #
-#     # # Filter original data by cluster labels fitted from normalized data
-#     # lst_orig = []  # Set up accumulator for arrays of clusters for original data
-#     # for i in range(n_clusters):
-#     #     cluster_array = data[labels == i]  # Filter original data for specified cluster label from norm data
-#     #     lst_orig += [cluster_array]  # Accumulate filtered array of specified cluster label
-#     #
-#     # print len(lst_orig[0]), len(lst_orig[1])
-#     #
-#     # # sil_score = silhouette_score(norm_data, labels)  # Silhouette Score
-#     # # print sil_score
-#     # fig = plt.figure()
-#     # plt.scatter(lst_orig[0][:, 0], lst_orig[0][:, 1], c='b', marker='x')
-#     # plt.scatter(lst_orig[1][:, 0], lst_orig[1][:, 1], c='r', marker='^')
-#     #
-#     # # Save fig
-#     # fig_path = os.path.join(get_abs_path(), 'static', 'tmp', 'cluster.png')
-#     # fig.savefig(fig_path)
-#
-#     return render_template('cluster.html')
-#                            # fig=url_for('static',
-#                            #             filename='tmp/cluster.png'))
-
-
-
-##main##
 

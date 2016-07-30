@@ -82,10 +82,12 @@
     <p id="sub" class="text-center"> The overall average prevalence of cancer amongst Medicare & Medicaid beneficiaries
         in the United States is <strong>{{ us_avg }}%</strong>.</p>
     <div>
-      <script src="http://d3js.org/d3.v3.min.js"></script>
-      <script src="http://d3js.org/topojson.v1.min.js"></script>
-      <!--<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>-->
-      <script src= {{ js_file }}></script>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="http://d3js.org/topojson.v1.min.js"></script>
+        <!--<script src="http://datamaps.github.io/scripts/datamaps.usa.min.js?v=1"></script>-->
+        <script src= {{ cancer_js }}></script>
+        <script src= {{ topo_js }}></script>
+        <script src= {{ js_file }}></script>
       <div id="container" style="position: relative; width: 1500px; height: 750px; left: 155px; top: 0px; bottom: 50px"></div>
 
          <script>
@@ -374,7 +376,7 @@
     </div>
     <div class="container text-right">
         <label><input type="checkbox"> Sort values</label>
-        <script src="//d3js.org/d3.v3.min.js"></script>
+        <script src={{ cancer_js }}></script>
         <script>
 
             var margin = {top: 20, right: 20, bottom: 30, left: 300},

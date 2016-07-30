@@ -19,6 +19,12 @@ def get_path():
 
 
 def readCSV():
+    f='Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
+    f_path = os.path.join(get_path(), f)
+    if not os.path.isfile(f_path):
+        print "Downloading Report CSV file -- download may take awhile..."
+        urllib.urlretrieve('https://data.cms.gov/api/views/4a3h-46r6/rows.csv?accessType=DOWNLOAD', f_path)
+        print "Report CSV download complete"
     columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
                "provider_gender", "provider_entity_type", "provider_street_address_1", "provider_street_address_2",
                "provider_city", "provider_zip_code", "provider_state_code", "provider_country_code", "provider_type",
@@ -98,9 +104,7 @@ def readCSV():
              ('percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders', np.float64),
              ('percent_of_beneficiaries_identified_with_stroke', np.float64),
              ('average_HCC_risk_score_of_beneficiaries', np.float64)]
-    df = pd.read_csv(os.path.join(get_path(),
-                                    'Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'),
-                       sep=',', names=columns, header=0, dtype=types, na_values='')
+    df = pd.read_csv(f_path, sep=',', names=columns, header=0, dtype=types, na_values='')
 
     #filter for only US states -- Convert to Numpy array
     state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
@@ -131,6 +135,12 @@ def readCSV():
 
 
 def readPUF():
+    puf_f ='Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv'
+    puf_path = os.path.join(get_path(), puf_f)
+    if not os.path.isfile(puf_path):
+        print "Downloading PUF CSV file -- download may take awhile..."
+        urllib.urlretrieve('https://data.cms.gov/api/views/ee7f-sh97/rows.csv?accessType=DOWNLOAD', puf_path)
+        print "PUF CSV download complete"
     puf_columns = ['npi', 'provider_last_name', 'provider_first_name', 'provider_middle_initial','provider_credentials',
                'provider_gender', 'provider_entity_type', 'provider_street_address_1', 'provider_street_address_2',
                'provider_city', 'provider_zip_code', 'provider_state_code', 'provider_country_code', 'provider_type',
@@ -156,103 +166,31 @@ def readPUF():
            'number_of_medicare_beneficiaries', 'number_of_distinct_medicare_beneficiary_per_day_services',
            'average_medicare_allowed_amount', 'average_submitted_charge_amount', 'average_medicare_payment_amount',
            'average_medicare_standardized_amount']
-    # puf_df = pd.read_csv(os.path.join(get_path(),
-    #                               'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv'),
-    #                  sep=',', names=puf_columns, dtype=puf_types, usecols=sel, header=0, na_values='')
-    puf_df = pd.DataFrame()
-    csv_path= os.path.join(get_path(),
-                           # 'puf_2014.csv')
-                           'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv')
-    reader = pd.read_csv(csv_path, iterator=True, chunksize=2000000, na_values='', names=puf_columns, dtype=puf_types, usecols=sel, header=0)
 
+    #read in CSV in chunks -- chunks of rows
+    csv_path= os.path.join(get_path(),
+                           'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv')
+    reader = pd.read_csv(csv_path, iterator=True, chunksize=2000000, na_values='', names=puf_columns, dtype=puf_types,
+                         usecols=sel, header=0)
+    #accumulate chunks in list
     pd_lst=[]
     for chunk in reader:
         pd_lst+=[chunk]
-        # puf_df = pd.concat([puf_df, chunk])
     return pd_lst
 
 
 def readBCH():
+    bch_f ='cancer_state.csv'
+    bch_path = os.path.join(get_path(), bch_f)
+    if not os.path.isfile(bch_path):
+        print "Downloading Cancer CSV file -- download may take awhile..."
+        urllib.urlretrieve('https://opendata.socrata.com/api/views/mqh4-spnv/rows.csv?accessType=DOWNLOAD', bch_path)
+        print "Cancer CSV download complete"
     columns = ['indicator', 'year', 'gender', 'race', 'value', 'place']
     # type = [('indicator', 'S10'), ('year', np.uint64), ('gender', 'S10'), ('race', 'S10'), ('value', np.float64), ('place'. 'S50')]
     df = pd.read_csv(os.path.join(get_path(), 'cancer_state.csv'), sep=',', names=columns, header=0, na_values='')
     df['place']=df['place'].apply(lambda x: x[-2:]) #filter for only state code
     return df
-
-
-def create_table():
-
-    db_file = os.path.join(get_path(), 'cms.db')
-    schema_file = os.path.join(get_path(), 'cms_schema.sql')
-    update_file = os.path.join(get_path(), 'update.sql')
-
-    db_is_new = not os.path.exists(db_file)
-    #Connecting/Creating database file
-    conn = sqlite3.connect(db_file)
-    c = conn.cursor()
-
-    if db_is_new:
-        print "Database created, creating table(s) schema"
-        print "Reading SQL script..."
-        f_schema = open(schema_file, 'r')
-        schema = f_schema.read()
-        f_schema.close()
-        c.executescript(schema) #create schema
-        #import data into SQL db
-        conn.text_factory = lambda x: unicode(x, 'utf-8', 'ignore')
-        data = readCSV()
-        cms = data.to_sql('report', con=conn, flavor='sqlite', if_exists='append', index=False)
-        #Update empty strings into SQL NULL values
-        f_update = open(update_file, 'r')
-        update = f_update.read()
-        f_update.close()
-        c.executescript(update)
-
-    else:
-        print "Database exists; opened successfully"
-
-    conn.commit()
-    return "Database Initialization complete"
-
-
-def query(path):
-
-    db_file = os.path.join(path, 'cms.db')
-    queries_file = os.path.join(path, "cms_queries.sql")
-    print queries_file
-
-    conn = sqlite3.connect(db_file) #create/open database
-    print "Connected to database successfully"
-    with conn:
-
-        c = conn.cursor()
-
-        print "Reading SQL script..."
-        f_queries = open(queries_file, 'r')
-        query = f_queries.read()
-        f_queries.close()
-
-        query_commands=query.split(';')
-        # print query_commands
-
-        print "Running SQL script..."
-        query_lst=[]
-        for command in query_commands:
-            # try:
-            c.execute(command)
-            row = c.fetchall()
-            query_lst+=[row]
-            # except OperationalError, msg:
-            #     print "Command skipped: ", msg
-
-
-        # c.execute("SELECT provider_state_code, percent_of_beneficiaries_identified_with_cancer FROM report GROUP BY provider_state_code;")
-        # print c.fetchone()
-        # rows = c.fetchall()
-        # for row in rows:
-        #     print row
-    # return rows
-    return query_lst
 
 
 def init_db():
@@ -302,13 +240,3 @@ def init_db():
         db.session.close()  # close session
         return
 
-
-def download():
-    file = os.path.split('https://drive.google.com/open?id=0B8umucjnm9I_SmpnZEpKYnpiYzQ')[1]
-    f_path=os.path.join(get_path(), 'que.sql')
-    urllib.urlretrieve('http://example.com/file.ext', f_path)
-    return "File Downloaded"
-
-
-#main
-# init_db()

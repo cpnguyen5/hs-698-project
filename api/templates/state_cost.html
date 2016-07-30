@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
     <head>
-        <title>CMS State Cost</title>
+        <title>CMS Cost</title>
     </head>
     {% extends "base.html" %}
     {% block content %}
@@ -106,7 +106,8 @@
     }
 </style>
 <body>
-    <script src="//d3js.org/d3.v3.min.js"></script>
+    <!--<script src="//d3js.org/d3.v3.min.js"></script>-->
+    <script src={{ cost_js }}></script>
     <div class="jumbotron">
         <h1 align="center">Costs of CMS Fee-for-Service Programs</h1>
         <div align="center">
@@ -467,7 +468,7 @@
         </div>
     <div align="center">
             <h3>Facility vs. Non-Facility (Office)</h3>
-            <img align="center" src="{{ facil_fig }}" width="1200" height="750">
+            <img align="center" src="{{ facil_fig }}" width="900" height="450">
     </div>
     <div id="body"></div>
     <div id="title" class="container-fluid bg-2"><h2 align="center">Appendix</h2></div>

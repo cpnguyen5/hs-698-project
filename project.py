@@ -1,6 +1,7 @@
 from api import db
 from api.models import Report, Puf, Cancer
-from config import SQLALCHEMY_DATABASE_URI
+# from config import SQLALCHEMY_DATABASE_URI
+import config
 import os
 import pandas as pd
 import numpy as np
@@ -205,7 +206,7 @@ def readBCH():
 def init_db():
 
     #Create engine to store data in local directory's db file
-    db_name = os.path.basename(SQLALCHEMY_DATABASE_URI)
+    db_name = os.path.basename(config.BaseConfig['SQLALCHEMY_DATABASE_URI'])
     db_path=os.path.join(get_path(), db_name) #hardcode
     engine = db.engine # sqlalchemy lib -- engine=create_engine('sqlite:///%s' % (db_path))
 

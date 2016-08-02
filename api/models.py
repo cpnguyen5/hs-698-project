@@ -75,7 +75,6 @@ class Report(db.Model):
     percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders = db.Column(db.Integer, nullable=True)
     percent_of_beneficiaries_identified_with_stroke = db.Column(db.Integer, nullable=True)
     average_HCC_risk_score_of_beneficiaries = db.Column(db.Float, nullable=True)
-    # puf = db.relationship('puf', backref='report')
 
 
 class Puf(db.Model):
@@ -100,7 +99,7 @@ class Puf(db.Model):
     # medicare_participation_indicator = db.Column(db.String(50), nullable=True)
     place_of_service = db.Column(db.String(50), nullable=True)
     HCPCS_code = db.Column(db.String(50), nullable=True)
-    HCPCS_description = db.Column(db.String(50), nullable=True)
+    HCPCS_description = db.Column(db.String(200), nullable=True)
     identifies_HCPCS_as_drug_included_in_the_ASP_drug_list = db.Column(db.String(50), nullable=True)
     number_of_services = db.Column(db.Float, nullable=True)
     number_of_medicare_beneficiaries = db.Column(db.Float, nullable=True)

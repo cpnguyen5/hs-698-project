@@ -1,16 +1,11 @@
-import sqlite3
+from api import db
+from api.models import Report, Puf, Cancer
+from config import SQLALCHEMY_DATABASE_URI
 import os
 import pandas as pd
 import numpy as np
 from pyzipcode import Pyzipcode as pz
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker, scoped_session
-from api import db
-from api.models import Report, Puf, Cancer
-import urllib
-import csv
-from config import SQLALCHEMY_DATABASE_URI
+import urllib3
 
 
 def get_path():
@@ -18,12 +13,26 @@ def get_path():
     return f_name
 
 
+def download(url, path):
+    http = urllib3.PoolManager()
+    r = http.request('GET', url, preload_content=False)
+    with open(path, 'wb') as output:
+        while True:
+            data = r.read(1024)
+            if not data:
+                break
+            output.write(data)
+
+    r.release_conn()
+    return
+
+
 def readCSV():
     f='Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
     f_path = os.path.join(get_path(), f)
     if not os.path.isfile(f_path):
         print "Downloading Report CSV file -- download may take awhile..."
-        urllib.urlretrieve('https://data.cms.gov/api/views/4a3h-46r6/rows.csv?accessType=DOWNLOAD', f_path)
+        download('https://data.cms.gov/api/views/4a3h-46r6/rows.csv?accessType=DOWNLOAD', f_path)
         print "Report CSV download complete"
     columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
                "provider_gender", "provider_entity_type", "provider_street_address_1", "provider_street_address_2",
@@ -139,7 +148,7 @@ def readPUF():
     puf_path = os.path.join(get_path(), puf_f)
     if not os.path.isfile(puf_path):
         print "Downloading PUF CSV file -- download may take awhile..."
-        urllib.urlretrieve('https://data.cms.gov/api/views/ee7f-sh97/rows.csv?accessType=DOWNLOAD', puf_path)
+        download('https://data.cms.gov/api/views/ee7f-sh97/rows.csv?accessType=DOWNLOAD', puf_path)
         print "PUF CSV download complete"
     puf_columns = ['npi', 'provider_last_name', 'provider_first_name', 'provider_middle_initial','provider_credentials',
                'provider_gender', 'provider_entity_type', 'provider_street_address_1', 'provider_street_address_2',
@@ -184,7 +193,7 @@ def readBCH():
     bch_path = os.path.join(get_path(), bch_f)
     if not os.path.isfile(bch_path):
         print "Downloading Cancer CSV file -- download may take awhile..."
-        urllib.urlretrieve('https://opendata.socrata.com/api/views/mqh4-spnv/rows.csv?accessType=DOWNLOAD', bch_path)
+        download('https://opendata.socrata.com/api/views/mqh4-spnv/rows.csv?accessType=DOWNLOAD', bch_path)
         print "Cancer CSV download complete"
     columns = ['indicator', 'year', 'gender', 'race', 'value', 'place']
     # type = [('indicator', 'S10'), ('year', np.uint64), ('gender', 'S10'), ('race', 'S10'), ('value', np.float64), ('place'. 'S50')]
@@ -195,7 +204,7 @@ def readBCH():
 
 def init_db():
 
-    # #Create engine to store data in local directory's db file
+    #Create engine to store data in local directory's db file
     db_name = os.path.basename(SQLALCHEMY_DATABASE_URI)
     db_path=os.path.join(get_path(), db_name) #hardcode
     engine = db.engine # sqlalchemy lib -- engine=create_engine('sqlite:///%s' % (db_path))
@@ -210,16 +219,12 @@ def init_db():
         #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
         db.create_all() # sqlalchemy lib -- Base.metadata.create_all(bind=engine)
         print "Table(s) schema created, inserting data..."
-        #Insert Data
-        #Individual Insert
-        # db.session.add(Report(npi=110, provider_state_code='AZ'))
-        # db.session.commit()
 
-        # Bulk insert of DataFrame
+        #Insert Data -- Bulk insert of DataFrame
         df_report = readCSV()
         report_lst = df_report.to_dict(orient='records')  # orient by records to align format
-        db.session.execute(Report.__table__.insert(), report_lst)
-        db.session.commit()
+        # db.session.execute(Report.__table__.insert(), report_lst)
+        # db.session.commit()
         df_puf = readPUF()
         for elem in df_puf[:5]:
             puf_lst = elem.to_dict(orient='records')
@@ -239,4 +244,3 @@ def init_db():
         db.session.commit()  # Commit
         db.session.close()  # close session
         return
-

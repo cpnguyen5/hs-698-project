@@ -55,18 +55,21 @@
         <h3>Histogram: Unique HCPCS Services & Procedures</h3>
         <ul class="list">
             <li>There is a positive, right-skewed distribution for the number of unique HCPCS services and procedures
-                provided per provider under the Medicaid and Medicare programs, suggesting that the mean is larger than
-                the median and mode (most frequent).</li>
-            <li>The average/mean number of unique services under CMS is <strong>{{ avg }}</strong>. The median and mode
-                values are <strong>{{ median }}</strong> and <strong>{{ mode }}</strong>, respectively. This indicates
-                that {{ mode }} unique services was more frequently ordered by the providers under CMS.</li>
+                provided per provider under the Medicaid and Medicare programs, suggesting that the <strong>mean</strong>
+                is larger than the <strong>median</strong> and <strong>mode</strong> (most frequent).</li>
+            <li>The <strong id="title">average/mean number of unique services</strong> under CMS is
+                <strong>{{ avg }}</strong>. The <strong>median</strong> and <strong>mode</strong> values are
+                <strong>{{ median }}</strong> and <strong>{{ mode }}</strong>, respectively. This indicates
+                that <strong id="title">{{ mode }} unique services was more frequently ordered</strong> by the providers
+                under CMS.</li>
         </ul>
         <h3>Pie Chart: Number of Services - Provider Utilization</h3>
         <ul class="list">
             <li>Majority of the services and procedures were utilized by clinicians for <strong>medical-related</strong>
                 services, which had an overall sum of {{ total_serv[1] }} across the nation. <strong>Drug-related</strong>
                 utilization accounted for {{ total_serv[2] }} services.</li>
-            <li>Overall, the total number of services and procedures utilized under CMS was {{ total_serv[0] }}.</li>
+            <li>Overall, the <strong id="title">total number of services and procedures</strong> utilized under CMS was
+                <strong id="title">{{ total_serv[0] }}</strong>.</li>
         </ul>
 
     </div>
@@ -88,12 +91,12 @@
             </p>
         <h4 id="title">Takeaways: </h4>
         <ul class="list">
-            <li>The number of total services and procedures under CMS has a relatively weak positive correlation with
-                the total overall CMS costs and medical-related costs.</li>
-            <li>On the other hand, there is a relatively strong negative correlation between the total number of
-                services and the total drug-related CMS costs.</li>
-            <li>The number of unique HCPCS services and procedures appears to have a negatively linear correlation
-                with all types of CMS costs (all-inclusive, medical-related, and drug-related.</li>
+            <li>The number of total services and procedures under CMS has a relatively <strong id="title">weak positive
+                correlation</strong> with the total overall CMS costs and medical-related costs.</li>
+            <li>On the other hand, there is a <strong id="title"> relatively strong negative correlation</strong>
+                between the total number of services and the total drug-related CMS costs.</li>
+            <li>The number of unique HCPCS services and procedures appears to have a <strong id="title"> negatively linear
+                correlation</strong> with all types of CMS costs (all-inclusive, medical-related, and drug-related.</li>
         </ul>
         <div align="center">
             <h3 align="center" id="title">Heatmap</h3>

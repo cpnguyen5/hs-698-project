@@ -1,19 +1,12 @@
-from api import app
-from flask import render_template, url_for, jsonify
+from api import app, db
+from flask import render_template, url_for
 import os
 import project
-import sqlite3
 import numpy as np
 import pandas as pd
-import json
 from .models import Report, Puf, Cancer
-from api import db
 from sqlalchemy import func, desc
-from sqlalchemy import select
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans, DBSCAN
-from sklearn.metrics import silhouette_score
-from sklearn import decomposition
+# from sqlalchemy import select
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy

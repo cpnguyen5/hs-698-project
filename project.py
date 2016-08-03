@@ -203,44 +203,44 @@ def readBCH():
     return df
 
 
-def init_db():
-
-    #Create engine to store data in local directory's db file
-    db_name = os.path.basename(app.config['SQLALCHEMY_DATABASE_URI'])
-    db_path=os.path.join(get_path(), db_name) #hardcode
-
-    db_is_new = not os.path.exists(db_path)
-    if db_is_new:
-        print "Database created, creating table(s) schema..."
-        #Remove spontaneous quoting of column name
-        db.engine.dialect.identifier_preparer.initial_quote = ''
-        db.engine.dialect.identifier_preparer.final_quote = ''
-
-        #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
-        db.create_all() # sqlalchemy lib -- Base.metadata.create_all(bind=engine)
-        print "Table(s) schema created, inserting data..."
-
-        #Insert Data -- Bulk insert of DataFrame
-        df_report = readCSV()
-        report_lst = df_report.to_dict(orient='records')  # orient by records to align format
-        db.session.execute(Report.__table__.insert(), report_lst)
-        db.session.commit()
-        df_puf = readPUF()
-        for elem in df_puf[:5]:
-            puf_lst = elem.to_dict(orient='records')
-            db.session.execute(Puf.__table__.insert(), puf_lst)
-            db.session.commit()
-        df_can = readBCH()
-        can_lst = df_can.to_dict(orient='records')
-        db.session.execute(Cancer.__table__.insert(), can_lst)
-
-        db.session.commit() #Commit
-        db.session.close() #close session
-        print "Data insert successful...database initialization complete"
-        return
-
-    else:
-        print "Database exists; opened successfully"
-        db.session.commit()  # Commit
-        db.session.close()  # close session
-        return
+# def init_db():
+#
+#     #Create engine to store data in local directory's db file
+#     db_name = os.path.basename(app.config['SQLALCHEMY_DATABASE_URI'])
+#     db_path=os.path.join(get_path(), db_name) #hardcode
+#
+#     db_is_new = not os.path.exists(db_path)
+#     if db_is_new:
+#         print "Database created, creating table(s) schema..."
+#         #Remove spontaneous quoting of column name
+#         db.engine.dialect.identifier_preparer.initial_quote = ''
+#         db.engine.dialect.identifier_preparer.final_quote = ''
+#
+#         #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
+#         db.create_all() # sqlalchemy lib -- Base.metadata.create_all(bind=engine)
+#         print "Table(s) schema created, inserting data..."
+#
+#         #Insert Data -- Bulk insert of DataFrame
+#         df_report = readCSV()
+#         report_lst = df_report.to_dict(orient='records')  # orient by records to align format
+#         db.session.execute(Report.__table__.insert(), report_lst)
+#         db.session.commit()
+#         df_puf = readPUF()
+#         for elem in df_puf[:5]:
+#             puf_lst = elem.to_dict(orient='records')
+#             db.session.execute(Puf.__table__.insert(), puf_lst)
+#             db.session.commit()
+#         df_can = readBCH()
+#         can_lst = df_can.to_dict(orient='records')
+#         db.session.execute(Cancer.__table__.insert(), can_lst)
+#
+#         db.session.commit() #Commit
+#         db.session.close() #close session
+#         print "Data insert successful...database initialization complete"
+#         return
+#
+#     else:
+#         print "Database exists; opened successfully"
+#         db.session.commit()  # Commit
+#         db.session.close()  # close session
+#         return

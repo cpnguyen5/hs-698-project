@@ -1,4 +1,4 @@
-from api import db
+from api import db, app
 from api.models import Report, Puf, Cancer
 # from config import SQLALCHEMY_DATABASE_URI
 import config
@@ -206,9 +206,8 @@ def readBCH():
 def init_db():
 
     #Create engine to store data in local directory's db file
-    db_name = os.path.basename(config.BaseConfig['SQLALCHEMY_DATABASE_URI'])
+    db_name = os.path.basename(app.config['SQLALCHEMY_DATABASE_URI'])
     db_path=os.path.join(get_path(), db_name) #hardcode
-    engine = db.engine # sqlalchemy lib -- engine=create_engine('sqlite:///%s' % (db_path))
 
     db_is_new = not os.path.exists(db_path)
     if db_is_new:
@@ -224,8 +223,8 @@ def init_db():
         #Insert Data -- Bulk insert of DataFrame
         df_report = readCSV()
         report_lst = df_report.to_dict(orient='records')  # orient by records to align format
-        # db.session.execute(Report.__table__.insert(), report_lst)
-        # db.session.commit()
+        db.session.execute(Report.__table__.insert(), report_lst)
+        db.session.commit()
         df_puf = readPUF()
         for elem in df_puf[:5]:
             puf_lst = elem.to_dict(orient='records')

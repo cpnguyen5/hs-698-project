@@ -2,6 +2,7 @@ from api import db, app
 from api.models import Report, Puf, Cancer
 import project
 
+engine = db.engine
 
 # Remove spontaneous quoting of column name
 db.engine.dialect.identifier_preparer.initial_quote = ''
@@ -13,17 +14,15 @@ print "Table(s) schema created, inserting data..."
 
 # Insert Data -- Bulk insert of DataFrame
 df_report = project.readCSV()
-report_lst = df_report.to_dict(orient='records')  # orient by records to align format
-db.session.execute(Report.__table__.insert(), report_lst)
-db.session.commit()
+for elem in df_report:
+    elem.to_sql('report', engine, if_exists='append', index=False)
+    db.session.commit()
 df_puf = project.readPUF()
 for elem in df_puf[:5]:
-    puf_lst = elem.to_dict(orient='records')
-    db.session.execute(Puf.__table__.insert(), puf_lst)
+    elem.to_sql('puf', engine, if_exists='append', index=False)
     db.session.commit()
 df_can = project.readBCH()
-can_lst = df_can.to_dict(orient='records')
-db.session.execute(Cancer.__table__.insert(), can_lst)
+df_can.to_sql('cancer', engine, if_exists='append', index=False)
 
 #Commit changes
 db.session.commit()

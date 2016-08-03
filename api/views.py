@@ -20,16 +20,8 @@ def get_abs_path():
     return os.path.abspath(os.path.dirname(__file__))
 
 
-def get_db():
-    db_path=os.path.join(project.get_path(),'cms3.db')
-    if not os.path.isfile(db_path):
-        project.init_db() #sqlalchemy
-    return db_path
-
-
 @app.route('/')
 def home():
-    get_db() # confirm db exist
     return render_template("home.html", img_file=url_for('static', filename='img/cms_logo.jpg'))
 
 

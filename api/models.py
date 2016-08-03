@@ -15,7 +15,7 @@ class Report(db.Model):
     provider_street_address_1 = db.Column(db.String(50), nullable=True)
     provider_street_address_2 = db.Column(db.String(50), nullable=True)
     provider_city = db.Column(db.String(50), nullable=True)
-    provider_zip_code = db.Column(db.Integer, nullable=True)
+    provider_zip_code = db.Column(db.String(20), nullable=True)
     provider_state_code = db.Column(db.String(50), nullable=True)
     provider_country_code = db.Column(db.String(50), nullable=True)
     provider_type = db.Column(db.String(50), nullable=True)
@@ -113,11 +113,11 @@ class Puf(db.Model):
 class Cancer(db.Model):
     __tablename__ = "cancer"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     indicator = db.Column(db.String(10), nullable=True)
     year = db.Column(db.Integer, nullable=True)
     gender = db.Column(db.String(10), nullable=True)
-    race = db.Column(db.String(20), nullable=True)
+    race = db.Column(db.String(30), nullable=True)
     value = db.Column(db.Float, nullable=True)
     place = db.Column(db.String(50), nullable=True)
 

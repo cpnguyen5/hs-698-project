@@ -114,7 +114,8 @@ def readCSV():
              ('percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders', np.float64),
              ('percent_of_beneficiaries_identified_with_stroke', np.float64),
              ('average_HCC_risk_score_of_beneficiaries', np.float64)]
-    df = pd.read_csv(f_path, sep=',', names=columns, header=0, dtype=types, na_values='')
+    rep_reader = pd.read_csv(f_path, sep=',', iterator=True, chunksize=200000, names=columns, header=0, dtype=types,
+                     na_values='')
 
     #filter for only US states -- Convert to Numpy array
     state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
@@ -123,25 +124,26 @@ def readCSV():
 
     terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP'] #USA territories
     usa = state+terr
-    data=df.as_matrix()
-    US_data = np.array([row for row in data if row[12]=='US'])
-    for row in US_data:
-        if row[11] not in usa and len(str(row[10])) >=5:
-            location=pz.get(int(str(row[10])[:5]),'US')
-            if location != False:
-                row[10]=location['postal_code'] #correct ZIP code
-                row[11]=location['state_short'] #correct state code
-    state_data= np.array([row for row in US_data if row[11] in state])
 
-    #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
-    state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
-    #Convert to Pandas DataFrame
-    # state_df = pd.DataFrame(data=state_data, columns=columns)
-    # state_df = state_df.convert_objects(convert_numeric=True)
+    report_lst = []
+    for chunk in rep_reader:
+        data = chunk.as_matrix()
+        US_data = np.array([row for row in data if row[12]=='US'])
+        for row in US_data:
+            if row[11] not in usa and len(str(row[10])) >=5:
+                location=pz.get(int(str(row[10])[:5]),'US')
+                if location != False:
+                    row[10]=location['postal_code'] #correct ZIP code
+                    row[11]=location['state_short'] #correct state code
+        state_data= np.array([row for row in US_data if row[11] in state])
 
-    state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
-    state_df = state_df.replace(to_replace='', value=np.nan)
-    return state_df
+        #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
+        state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
+        #Convert to Pandas DataFrame
+        state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
+        state_df = state_df.replace(to_replace='', value=np.nan)
+        report_lst += [state_df]
+    return report_lst
 
 
 def readPUF():

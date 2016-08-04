@@ -306,7 +306,7 @@ def cost():
         group_by(Report.provider_state_code).limit(5).all()
     data = []
     for row in top_rows:
-        state_sum=np.sum(row[2:])
+        state_sum=float(np.sum(row[2:]))
         state_cost=tuple()
         state_cost+=(row[0],) #state
         state_cost+=(round(row[1], 2),) #total payment amount
@@ -520,9 +520,12 @@ def demographics():
 
 @app.route('/cost/hcpcs')
 def procedure():
+
     #histogram - unique hcpcs per npi
-    rows_unique = db.session.query(Report.number_of_HCPCS).all()
-    hcpcs_dist = pd.DataFrame(rows_unique)
+    rows_unique = db.session.query(Report.number_of_hcpcs).all()
+    # rows_unique = list(db.engine.execute("SELECT number_of_HCPCS from report"))
+
+    hcpcs_dist = pd.DataFrame(rows_unique, columns=['number_of_HCPCS'])
     hcpcs_dist = hcpcs_dist[hcpcs_dist['number_of_HCPCS'] < 200]
     plt.figure()
     h = hcpcs_dist['number_of_HCPCS'].plot.hist(bins=20, figsize=(10, 7), color='green')
@@ -555,27 +558,35 @@ def procedure():
 
     #leading hcpcs services
     ##most frequently utilized HCPCS
-    rows_freq = db.session.query(Puf.HCPCS_code, Puf.HCPCS_description, func.count(Puf.HCPCS_code),
-                                 Puf.average_medicare_standardized_amount).group_by(Puf.HCPCS_code).\
-        order_by(desc(func.count(Puf.HCPCS_code))).limit(10).all()
+    rows_freq = db.session.query(Puf.hcpcs_code, func.count(Puf.hcpcs_code)).group_by(Puf.hcpcs_code).\
+        order_by(desc(func.count(Puf.hcpcs_code))).limit(10).all()
+
     freq_serv = []
     for i in range(len(rows_freq)):
-        freq_row = rows_freq[i][:3] + (round(rows_freq[i][3], 2),)
+        code = str(rows_freq[i][0])
+        code_info = db.session.query(Puf.hcpcs_description).filter(Puf.hcpcs_code == code).first()
+        code_amt = db.session.query(func.avg(Puf.average_medicare_standardized_amount)).\
+            filter(Puf.hcpcs_code == code).first()
+        freq_row = (code,) + code_info + (int(rows_freq[i][1]),) + (round(float(code_amt[0]), 2),)
         freq_serv += [freq_row]
     freq_serv = np.array(freq_serv)
 
     ##most expensive HCPCS
-    rows_exp = db.session.query(Puf.HCPCS_code, Puf.HCPCS_description, func.count(Puf.HCPCS_code),
-                                Puf.average_medicare_standardized_amount).group_by(Puf.HCPCS_code).\
-        order_by(desc(Puf.average_medicare_standardized_amount)).limit(10).all()
+    rows_exp = db.session.query(Puf.hcpcs_code, func.avg(Puf.average_medicare_standardized_amount)).\
+        filter(Puf.hcpcs_code != '').group_by(Puf.hcpcs_code).\
+        order_by(desc(func.avg(Puf.average_medicare_standardized_amount))).limit(10).all()
+
     exp_serv = []
     for i in range(len(rows_exp)):
-        exp_row = rows_exp[i][:3] + (round(rows_exp[i][3], 2),)
+        exp_code = str(rows_exp[i][0])
+        exp_code_info = db.session.query(Puf.hcpcs_description).filter(Puf.hcpcs_code == exp_code).first()
+        exp_code_count = db.session.query(func.count(Puf.hcpcs_code)).filter(Puf.hcpcs_code == exp_code).all()
+        exp_row = (exp_code,) + exp_code_info + (int(exp_code_count[0][0]),) + (round(rows_exp[i][1], 2),)
         exp_serv += [exp_row]
     exp_serv = np.array(exp_serv)
 
     #correlation - cost & number of services
-    rows_corr = db.session.query(Report.number_of_services, Report.number_of_HCPCS,
+    rows_corr = db.session.query(Report.number_of_services, Report.number_of_hcpcs,
                                  Report.total_medicare_standardized_payment_amount,
                                  Report.total_medical_medicare_standardized_payment_amount,
                                  Report.total_drug_medicare_standardized_payment_amount).all()
@@ -591,7 +602,6 @@ def procedure():
     servicecorr_plot = sns.heatmap(service_corr, mask=mask, cmap=cmap, ax=ax)
     scorr_path = os.path.join(get_abs_path(), 'static', 'tmp', 'heatmap_service.png')
     servicecorr_plot.figure.savefig(scorr_path, transparent=True)
-
     return render_template("cost_hcpcs.html", unique_fig=url_for('static', filename='tmp/hcpcs_dist.png'),
                            pie_fig=url_for('static', filename='tmp/num_pie.png'), total_serv =total_data,
                            median=hcpcs_median, avg=hcpcs_mean, mode=hcpcs_mode, freq_serv=freq_serv, exp_serv=exp_serv,

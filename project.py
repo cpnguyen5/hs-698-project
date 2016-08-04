@@ -1,7 +1,5 @@
 from api import db, app
 from api.models import Report, Puf, Cancer
-# from config import SQLALCHEMY_DATABASE_URI
-import config
 import os
 import pandas as pd
 import numpy as np

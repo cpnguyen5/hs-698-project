@@ -1,12 +1,10 @@
 from api import app, db
 from flask import render_template, url_for
 import os
-import project
 import numpy as np
 import pandas as pd
 from .models import Report, Puf, Cancer
 from sqlalchemy import func, desc
-# from sqlalchemy import select
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy

@@ -6,13 +6,13 @@ class BaseConfig(object):
     basedir=os.path.abspath(os.path.dirname(__file__))
     db_path=os.path.join(basedir, 'api', 'dataset', 'cms.db')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + db_path #required by Flask-SQLAlchemy extension -- path to db file
-    # SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'] # DATABASE URL=sqlite:////home/cpnguyen/hs-698-project/api/dataset/cms.db
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(BaseConfig):
     DEBUG=True
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres:abcd1234@localhost/cms_post"
+
 
 class ProductionConfig(BaseConfig):
     DEBUG=False

@@ -42,40 +42,52 @@ def readCSV():
     does not yet exist locally, the function will download the CSV file implementing the urllib3 package.
     :return: DataFrame of 'Report' CSV file
     """
-    # f='Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
-    f = 'CMS_Aggregate_Report.csv' # pre-modified CSV file -- workaround memory error in AWS
+    f = 'Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
     # Check for existing local CSV file
     f_path = os.path.join(get_path(), f)
     if not os.path.isfile(f_path):
         print "Downloading Report CSV file -- download may take awhile..."
-        download('https://opendata.socrata.com/api/views/cx4a-ep76/rows.csv?accessType=DOWNLOAD', f_path)
+        download('https://data.cms.gov/api/views/4a3h-46r6/rows.csv?accessType=DOWNLOAD', f_path)
         print "Report CSV download complete"
     columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
                "provider_gender", "provider_entity_type", "provider_street_address_1", "provider_street_address_2",
                "provider_city", "provider_zip_code", "provider_state_code", "provider_country_code", "provider_type",
-               "medicare_participation_indicator", "number_of_HCPCS", "number_of_services", "number_of_medicare_beneficiaries",
+               "medicare_participation_indicator", "number_of_HCPCS", "number_of_services",
+               "number_of_medicare_beneficiaries",
                "total_submitted_charge_amount", "total_medicare_allowed_amount", "total_medicare_payment_amount",
                "total_medicare_standardized_payment_amount", "drug_suppress_indicator",
                "number_of_HCPCS_associated_with_drug_services", "number_of_drug_services",
                "number_of_medicare_beneficiaries_with_drug_services", "total_drug_submitted_charge_amount",
-               "total_drug_medicare_allowed_amount", "total_drug_medicare_payment_amount", "total_drug_medicare_standardized_payment_amount",
-               "medical_suppress_indicator", "number_of_HCPCS_associated_medical_services", "number_of_medical_services",
+               "total_drug_medicare_allowed_amount", "total_drug_medicare_payment_amount",
+               "total_drug_medicare_standardized_payment_amount",
+               "medical_suppress_indicator", "number_of_HCPCS_associated_medical_services",
+               "number_of_medical_services",
                "number_of_medicare_beneficiaries_with_medical_services", "total_medical_submitted_charge_amount",
                "total_medical_medicare_allowed_amount", "total_medical_medicare_payment_amount",
-               "total_medical_medicare_standardized_payment_amount", "average_age_of_beneficiaries", "number_of_beneficiaries_age_less_65",
-               "number_of_beneficiaries_age_65_to_74", "number_of_beneficiaries_age_75_to_84", "number_of_beneficiaries_age_greater_84",
-               "number_of_female_beneficiaries", "number_of_male_beneficiaries", "number_of_non_hispanic_white_beneficiaries",
+               "total_medical_medicare_standardized_payment_amount", "average_age_of_beneficiaries",
+               "number_of_beneficiaries_age_less_65",
+               "number_of_beneficiaries_age_65_to_74", "number_of_beneficiaries_age_75_to_84",
+               "number_of_beneficiaries_age_greater_84",
+               "number_of_female_beneficiaries", "number_of_male_beneficiaries",
+               "number_of_non_hispanic_white_beneficiaries",
                "number_of_african_american_beneficiaries", "number_of_asian_pacific_islander_beneficiaries",
                "number_of_hispanic_beneficiaries", "number_of_american_indian_alaskan_native_beneficiaries",
-               "number_of_beneficiaries_with_race_not_elsewhere_classified", "number_of_beneficiaries_with_medicare_only_entitlement",
-               "number_of_beneficiaries_with_medicare_and_medicaid_entitlement", "percent_of_beneficiaries_identified_with_atrial_fibrillation",
+               "number_of_beneficiaries_with_race_not_elsewhere_classified",
+               "number_of_beneficiaries_with_medicare_only_entitlement",
+               "number_of_beneficiaries_with_medicare_and_medicaid_entitlement",
+               "percent_of_beneficiaries_identified_with_atrial_fibrillation",
                "percent_of_beneficiaries_identified_with_alzheimers_disease_or_dementia",
                "percent_of_beneficiaries_identified_with_asthma", "percent_of_beneficiaries_identified_with_cancer",
-               "percent_of_beneficiaries_identified_with_heart_failure", "percent_of_beneficiaries_identified_with_chronic_kidney_disease",
-               "percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease", "percent_of_beneficiaries_identified_with_depression",
-               "percent_of_beneficiaries_identified_with_diabetes", "percent_of_beneficiaries_identified_with_hyperlipidemia",
-               "percent_of_beneficiaries_identified_with_hypertension", "percent_of_beneficiaries_identified_with_ischemic_heart_disease",
-               "percent_of_beneficiaries_identified_with_osteoporosis", "percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis",
+               "percent_of_beneficiaries_identified_with_heart_failure",
+               "percent_of_beneficiaries_identified_with_chronic_kidney_disease",
+               "percent_of_beneficiaries_identified_with_chronic_obstructive_pulmonary_disease",
+               "percent_of_beneficiaries_identified_with_depression",
+               "percent_of_beneficiaries_identified_with_diabetes",
+               "percent_of_beneficiaries_identified_with_hyperlipidemia",
+               "percent_of_beneficiaries_identified_with_hypertension",
+               "percent_of_beneficiaries_identified_with_ischemic_heart_disease",
+               "percent_of_beneficiaries_identified_with_osteoporosis",
+               "percent_of_beneficiaries_identified_with_rheumatoid_arthritis_osteoarthritis",
                "percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders",
                "percent_of_beneficiaries_identified_with_stroke", "average_HCC_risk_score_of_beneficiaries"]
     types = [('npi', np.int64), ('provider_last_name', 'S20'), ('provider_first_name', 'S20'),
@@ -84,13 +96,15 @@ def readCSV():
              ('provider_street_address_2', 'S20'),
              ('provider_city', 'S20'), ('provider_zip_code', 'S20'), ('provider_state_code', 'S20'),
              ('provider_country_code', 'S20'), ('provider_type', 'S20'),
-             ('medicare_participation_indicator', 'S20'), ('number_of_HCPCS', np.int64), ('number_of_services', np.float64),
+             ('medicare_participation_indicator', 'S20'), ('number_of_HCPCS', np.int64),
+             ('number_of_services', np.float64),
              ('number_of_medicare_beneficiaries', np.int64),
              ('total_submitted_charge_amount', np.float64), ('total_medicare_allowed_amount', np.float64),
              ('total_medicare_payment_amount', np.float64),
              ('total_medicare_standardized_payment_amount', np.float64), ('drug_suppress_indicator', 'S20'),
              ('number_of_HCPCS_associated_with_drug_services', np.float64),
-             ('number_of_drug_services', np.float64), ('number_of_medicare_beneficiaries_with_drug_services', np.float64),
+             ('number_of_drug_services', np.float64),
+             ('number_of_medicare_beneficiaries_with_drug_services', np.float64),
              ('total_drug_submitted_charge_amount', np.float64),
              ('total_drug_medicare_allowed_amount', np.float64), ('total_drug_medicare_payment_amount', np.float64),
              ('total_drug_medicare_standardized_payment_amount', np.float64),
@@ -98,11 +112,13 @@ def readCSV():
              ('number_of_medical_services', np.float64),
              ('number_of_medicare_beneficiaries_with_medical_services', np.float64),
              ('total_medical_submitted_charge_amount', np.float64),
-             ('total_medical_medicare_allowed_amount', np.float64), ('total_medical_medicare_payment_amount', np.float64),
+             ('total_medical_medicare_allowed_amount', np.float64),
+             ('total_medical_medicare_payment_amount', np.float64),
              ('total_medical_medicare_standardized_payment_amount', np.float64),
              ('average_age_of_beneficiaries', np.int64), ('number_of_beneficiaries_age_less_65', np.float64),
              ('number_of_beneficiaries_age_65_to_74', np.float64),
-             ('number_of_beneficiaries_age_75_to_84', np.float64), ('number_of_beneficiaries_age_greater_84', np.float64),
+             ('number_of_beneficiaries_age_75_to_84', np.float64),
+             ('number_of_beneficiaries_age_greater_84', np.float64),
              ('number_of_female_beneficiaries', np.float64),
              ('number_of_male_beneficiaries', np.float64), ('number_of_non_hispanic_white_beneficiaries', np.float64),
              ('number_of_african_american_beneficiaries', np.float64),
@@ -130,37 +146,37 @@ def readCSV():
              ('percent_of_beneficiaries_identified_with_stroke', np.float64),
              ('average_HCC_risk_score_of_beneficiaries', np.float64)]
     # Parse large CSV into chunks of DataFrames
-    rep_reader = pd.read_csv(f_path, sep=',', header=0, na_values=[''], chunksize=100000, iterator=True,
-                             low_memory=False) # DataFrame from CSV -- chunks
-    # List of DataFrame chunks
+    rep_reader = pd.read_csv(f_path, sep=',', iterator=True, chunksize=200000, names=columns, header=0, dtype=types,
+                             na_values='')
+
+    # filter for only US states -- Convert to Numpy array
+    state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+             'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
+             'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
+
+    terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP']  # USA territories
+    usa = state + terr
+
+    # Edit formatting of Zip Code & Corrected Typos in State Abbreviation
     report_lst = []
     for chunk in rep_reader:
-        report_lst += [chunk]
+        data = chunk.as_matrix()
+        US_data = np.array([row for row in data if row[12] == 'US'])
+        for row in US_data:
+            if row[11] not in usa and len(str(row[10])) >= 5:
+                location = pz.get(int(str(row[10])[:5]), 'US')
+                if location != False:
+                    row[10] = location['postal_code']  # correct ZIP code
+                    row[11] = location['state_short']  # correct state code
+        state_data = np.array([row for row in US_data if row[11] in state])
+
+        # Convert to recarray -- transfer heterogeneous column dtypes to DataFrame
+        state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
+        # Convert to Pandas DataFrame
+        state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
+        state_df = state_df.replace(to_replace='', value=np.nan) # replace empty fields with NaN/null
+        report_lst += [state_df]
     return report_lst
-    # #filter for only US states -- Convert to Numpy array
-    # state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
-    #          'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
-    #          'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
-    #
-    # terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP'] #USA territories
-    # usa = state+terr
-    #
-    # data = rep_reader.as_matrix()
-    # US_data = np.array([row for row in data if row[12]=='US'])
-    # for row in US_data:
-    #     if row[11] not in usa and len(str(row[10])) >=5:
-    #         location=pz.get(int(str(row[10])[:5]),'US')
-    #         if location != False:
-    #             row[10]=location['postal_code'] #correct ZIP code
-    #             row[11]=location['state_short'] #correct state code
-    # state_data= np.array([row for row in US_data if row[11] in state])
-    #
-    # #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
-    # state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
-    # #Convert to Pandas DataFrame
-    # state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
-    # state_df = state_df.replace(to_replace='', value=np.nan)
-    # # state_df.to_csv(path_or_buf=os.path.join(get_path(), 'CMS_Aggregate_Report.csv'), index=False)
 
 
 def readPUF():

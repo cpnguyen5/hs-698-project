@@ -1,7 +1,5 @@
 from api import db, app
 from api.models import Report, Puf, Cancer
-# from config import SQLALCHEMY_DATABASE_URI
-import config
 import os
 import pandas as pd
 import numpy as np
@@ -27,15 +25,14 @@ def download(url, path):
     :return: None
     """
     http = urllib3.PoolManager()
-    r = http.request('GET', url, preload_content=False)
+    r = http.request('GET', url, preload_content=False) # open URL
     with open(path, 'wb') as output:
         while True:
             data = r.read(1024)
             if not data:
                 break
-            output.write(data)
-
-    r.release_conn()
+            output.write(data) # load
+    r.release_conn() # end request connection
     return
 
 
@@ -45,12 +42,13 @@ def readCSV():
     does not yet exist locally, the function will download the CSV file implementing the urllib3 package.
     :return: DataFrame of 'Report' CSV file
     """
-    f='Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
+    # f='Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
+    f = 'CMS_Aggregate_Report.csv' # pre-modified CSV file -- workaround memory error in AWS
     # Check for existing local CSV file
     f_path = os.path.join(get_path(), f)
     if not os.path.isfile(f_path):
         print "Downloading Report CSV file -- download may take awhile..."
-        download('https://data.cms.gov/api/views/4a3h-46r6/rows.csv?accessType=DOWNLOAD', f_path)
+        download('https://opendata.socrata.com/api/views/cx4a-ep76/rows.csv?accessType=DOWNLOAD', f_path)
         print "Report CSV download complete"
     columns = ["npi", "provider_last_name", "provider_first_name", "provider_middle_initial", "provider_credentials",
                "provider_gender", "provider_entity_type", "provider_street_address_1", "provider_street_address_2",
@@ -131,31 +129,38 @@ def readCSV():
              ('percent_of_beneficiaries_identified_with_schizophrenia_other_psychotic_disorders', np.float64),
              ('percent_of_beneficiaries_identified_with_stroke', np.float64),
              ('average_HCC_risk_score_of_beneficiaries', np.float64)]
-    df = pd.read_csv(f_path, sep=',', names=columns, header=0, dtype=types, na_values='')
-
-    #filter for only US states -- Convert to Numpy array
-    state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
-             'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
-             'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
-    # Edit formatting of Zip Code & Corrected Typos in State Abbreviation
-    terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP'] #USA territories
-    usa = state+terr
-    data=df.as_matrix()
-    US_data = np.array([row for row in data if row[12]=='US'])
-    for row in US_data:
-        if row[11] not in usa and len(str(row[10])) >=5:
-            location=pz.get(int(str(row[10])[:5]),'US')
-            if location != False:
-                row[10]=location['postal_code'] #correct ZIP code
-                row[11]=location['state_short'] #correct state code
-    state_data= np.array([row for row in US_data if row[11] in state])
-
-    #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
-    state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
-    #Convert to Pandas DataFrame
-    state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
-    state_df = state_df.replace(to_replace='', value=np.nan) # replace empty fields with NaN/null
-    return state_df
+    # Parse large CSV into chunks of DataFrames
+    rep_reader = pd.read_csv(f_path, sep=',', header=0, na_values=[''], chunksize=100000, iterator=True,
+                             low_memory=False) # DataFrame from CSV -- chunks
+    # List of DataFrame chunks
+    report_lst = []
+    for chunk in rep_reader:
+        report_lst += [chunk]
+    return report_lst
+    # #filter for only US states -- Convert to Numpy array
+    # state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+    #          'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
+    #          'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
+    #
+    # terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP'] #USA territories
+    # usa = state+terr
+    #
+    # data = rep_reader.as_matrix()
+    # US_data = np.array([row for row in data if row[12]=='US'])
+    # for row in US_data:
+    #     if row[11] not in usa and len(str(row[10])) >=5:
+    #         location=pz.get(int(str(row[10])[:5]),'US')
+    #         if location != False:
+    #             row[10]=location['postal_code'] #correct ZIP code
+    #             row[11]=location['state_short'] #correct state code
+    # state_data= np.array([row for row in US_data if row[11] in state])
+    #
+    # #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
+    # state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
+    # #Convert to Pandas DataFrame
+    # state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
+    # state_df = state_df.replace(to_replace='', value=np.nan)
+    # # state_df.to_csv(path_or_buf=os.path.join(get_path(), 'CMS_Aggregate_Report.csv'), index=False)
 
 
 def readPUF():
@@ -180,7 +185,6 @@ def readPUF():
                'number_of_medicare_beneficiaries', 'number_of_distinct_medicare_beneficiary_per_day_services',
                'average_medicare_allowed_amount', 'average_submitted_charge_amount', 'average_medicare_payment_amount',
                'average_medicare_standardized_amount']
-
     puf_types = [('npi', np.uint64), ('provider_last_name', 'S20'), ('provider_first_name', 'S20'), ('provider_middle_initial', 'S20'),
              ('provider_credentials', 'S20'),('provider_gender', 'S20'),('provider_entity_type', 'S20'),
              ('provider_street_address_1', 'S20'),('provider_street_address_2', 'S20'),('provider_city', 'S20'),
@@ -191,7 +195,7 @@ def readPUF():
              ('number_of_distinct_medicare_beneficiary_per_day_services', np.float64),
              ('average_medicare_allowed_amount', np.float64),('average_submitted_charge_amount', np.float64),
              ('average_medicare_payment_amount', np.float64),('average_medicare_standardized_amount', np.float64)]
-
+    # select non-repetitive columns
     sel = ['npi', 'place_of_service', 'HCPCS_code', 'HCPCS_description',
            'identifies_HCPCS_as_drug_included_in_the_ASP_drug_list', 'number_of_services',
            'number_of_medicare_beneficiaries', 'number_of_distinct_medicare_beneficiary_per_day_services',
@@ -201,7 +205,7 @@ def readPUF():
     # Parse large CSV into chunks of DataFrames
     csv_path= os.path.join(get_path(),
                            'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv')
-    reader = pd.read_csv(csv_path, iterator=True, chunksize=2000000, na_values='', names=puf_columns, dtype=puf_types,
+    reader = pd.read_csv(csv_path, iterator=True, chunksize=100000, na_values='', names=puf_columns, dtype=puf_types,
                          usecols=sel, header=0)
     # List of DataFrame chunks
     pd_lst=[]
@@ -225,53 +229,7 @@ def readBCH():
         download('https://opendata.socrata.com/api/views/mqh4-spnv/rows.csv?accessType=DOWNLOAD', bch_path)
         print "Cancer CSV download complete"
     columns = ['indicator', 'year', 'gender', 'race', 'value', 'place']
+    # Parse CSV into DataFrame
     df = pd.read_csv(os.path.join(get_path(), 'cancer_state.csv'), sep=',', names=columns, header=0, na_values='')
     df['place']=df['place'].apply(lambda x: x[-2:]) #filter for only state code
     return df
-
-
-def init_db():
-    """This function takes no parameters and initializes the database, if no database exists yet. The function will
-        create the database table schema and insert the data appropriately."""
-    #Create engine to store data in local directory's db file
-    db_name = os.path.basename(app.config['SQLALCHEMY_DATABASE_URI'])
-    db_path=os.path.join(get_path(), db_name)
-
-    db_is_new = not os.path.exists(db_path)
-    if db_is_new:
-        print "Database created, creating table(s) schema..."
-        #Remove spontaneous quoting of column name
-        db.engine.dialect.identifier_preparer.initial_quote = ''
-        db.engine.dialect.identifier_preparer.final_quote = ''
-
-        #Create schema -- all tables in the engine -- equivalent to SQL "Create Table"
-        db.create_all() # sqlalchemy lib -- Base.metadata.create_all(bind=engine)
-        print "Table(s) schema created, inserting data..."
-
-        #Insert Data -- Bulk insert of DataFrame
-        ## Insert Report CSV -- Report Table
-        df_report = readCSV()
-        report_lst = df_report.to_dict(orient='records')  # orient by records to align format
-        db.session.execute(Report.__table__.insert(), report_lst)
-        db.session.commit()
-        ## Insert PUF CSV -- Puf Table
-        df_puf = readPUF()
-        for elem in df_puf[:5]:
-            puf_lst = elem.to_dict(orient='records')
-            db.session.execute(Puf.__table__.insert(), puf_lst)
-            db.session.commit()
-        ## Insert BCHC CSV -- Cancer Table
-        df_can = readBCH()
-        can_lst = df_can.to_dict(orient='records')
-        db.session.execute(Cancer.__table__.insert(), can_lst)
-
-        db.session.commit() #Commit
-        db.session.close() #close session
-        print "Data insert successful...database initialization complete"
-        return
-
-    else:
-        print "Database exists; opened successfully"
-        db.session.commit()  # Commit
-        db.session.close()  # close session
-        return

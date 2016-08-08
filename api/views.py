@@ -556,7 +556,7 @@ def demographics():
 def procedure():
     #Unique HCPCS Services
     ## Histogram - unique hcpcs per npi
-    rows_unique = db.session.query(Report.number_of_hcpcs).all()
+    rows_unique = db.session.query(Report.number_of_HCPCS).all()
     hcpcs_dist = pd.DataFrame(rows_unique, columns=['number_of_HCPCS']) # DataFrame
     hcpcs_dist = hcpcs_dist[hcpcs_dist['number_of_HCPCS'] < 200] # Filter for Number of Unique HCPCS < 200
     plt.figure()
@@ -592,35 +592,35 @@ def procedure():
 
     # Rankings - Leading HCPCS Services
     ## Most frequently utilized HCPCS
-    rows_freq = db.session.query(Puf.hcpcs_code, func.count(Puf.hcpcs_code)).group_by(Puf.hcpcs_code).\
-        order_by(desc(func.count(Puf.hcpcs_code))).limit(10).all()
+    rows_freq = db.session.query(Puf.HCPCS_code, func.count(Puf.HCPCS_code)).group_by(Puf.HCPCS_code).\
+        order_by(desc(func.count(Puf.HCPCS_code))).limit(10).all()
 
     freq_serv = []
     for i in range(len(rows_freq)):
         code = str(rows_freq[i][0])
-        code_info = db.session.query(Puf.hcpcs_description).filter(Puf.hcpcs_code == code).first()
+        code_info = db.session.query(Puf.HCPCS_description).filter(Puf.HCPCS_code == code).first()
         code_amt = db.session.query(func.avg(Puf.average_medicare_standardized_amount)).\
-            filter(Puf.hcpcs_code == code).first()
+            filter(Puf.HCPCS_code == code).first()
         freq_row = (code,) + code_info + (int(rows_freq[i][1]),) + (round(float(code_amt[0]), 2),)
         freq_serv += [freq_row]
     freq_serv = np.array(freq_serv)
 
     ## Most expensive HCPCS
-    rows_exp = db.session.query(Puf.hcpcs_code, func.avg(Puf.average_medicare_standardized_amount)).\
-        filter(Puf.hcpcs_code != '').group_by(Puf.hcpcs_code).\
+    rows_exp = db.session.query(Puf.HCPCS_code, func.avg(Puf.average_medicare_standardized_amount)).\
+        filter(Puf.HCPCS_code != '').group_by(Puf.HCPCS_code).\
         order_by(desc(func.avg(Puf.average_medicare_standardized_amount))).limit(10).all()
 
     exp_serv = []
     for i in range(len(rows_exp)):
         exp_code = str(rows_exp[i][0])
-        exp_code_info = db.session.query(Puf.hcpcs_description).filter(Puf.hcpcs_code == exp_code).first()
-        exp_code_count = db.session.query(func.count(Puf.hcpcs_code)).filter(Puf.hcpcs_code == exp_code).all()
+        exp_code_info = db.session.query(Puf.HCPCS_description).filter(Puf.HCPCS_code == exp_code).first()
+        exp_code_count = db.session.query(func.count(Puf.HCPCS_code)).filter(Puf.HCPCS_code == exp_code).all()
         exp_row = (exp_code,) + exp_code_info + (int(exp_code_count[0][0]),) + (round(rows_exp[i][1], 2),)
         exp_serv += [exp_row]
     exp_serv = np.array(exp_serv)
 
     # Correlation - Cost & Number of Services
-    rows_corr = db.session.query(Report.number_of_services, Report.number_of_hcpcs,
+    rows_corr = db.session.query(Report.number_of_services, Report.number_of_HCPCS,
                                  Report.total_medicare_standardized_payment_amount,
                                  Report.total_medical_medicare_standardized_payment_amount,
                                  Report.total_drug_medicare_standardized_payment_amount).all()

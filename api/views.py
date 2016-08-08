@@ -663,5 +663,3 @@ def puf():
 @app.route('/data/cancer')
 def cancer():
     return render_template("cancer_data.html")
-
-

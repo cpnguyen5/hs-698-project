@@ -31,25 +31,35 @@ web application via `python run_api.py` through the terminal within the Ubuntu s
 
 ## Branches
 ### Master
-The master branch provides the foundation for the project and other corresponding branches.
+The master branch is the final *production* version of the project, encompassing the deployed version of the 
+Flask application. The production configuration implements a server-based PostgreSQL database through Amazon
+Web Service's (AWS) Relational Database Service (RDS).  
 
+   **Database**: PostgreSQL *via AWS's RDS*  
+   **Deployment**: AWS E2 Instance (http://54.187.154.214:5003)
+  * Public IP: 54.187.154.214
+  * Port: 5003
+ 
 ### sqlite3
-The sqlite3 branch is identical to the master branch and preserves the sqlite3 database configuration.
-*Database*: local sqlite3
-*Deployment*: local (http://localhost:5003/)
+The sqlite3 branch is developmental configuration, implementing a sqlite3 database.  
+
+   **Database**: local sqlite3  
+   **Deployment**: local (http://localhost:5003/)
   * Port: 5003
 
 ### dev
-The dev branch consists of the **developmental** configuration, implementing a local PostgreSQL database.
-*Database*: local PostgreSQL
-*Deployment*: local (http://localhost:5003/)
+The dev branch consists of the *developmental* configuration, implementing a local PostgreSQL database.  
+
+   **Database**: local PostgreSQL  
+   **Deployment**: local (http://localhost:5003/)
   * Port: 5003
 
 ### aws
-The aws branch consists of the **production** configuration, implementing a server-based PostgreSQL database
-through Amazon Web Service's (AWS) Relational Database Service (RDS).
-*Database*: PostgreSQL **via AWS's RDS**
-*Deployment*: AWS E2 Instance (http://54.187.154.214:5003)
+The aws branch consists of the development of the *production* configuration, implementing a server-based 
+PostgreSQL database through AWS's Relational Database Service (RDS).  
+
+   **Database**: PostgreSQL *via AWS's RDS*  
+   **Deployment**: AWS E2 Instance (http://54.187.154.214:5003)
   * Public IP: 54.187.154.214
   * Port: 5003
  

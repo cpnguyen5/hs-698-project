@@ -35,7 +35,7 @@ The master branch is the final *production* version of the project, encompassing
 Flask application. The production configuration implements a server-based PostgreSQL database through Amazon
 Web Service's (AWS) Relational Database Service (RDS).  
 
-   **Database**: PostgreSQL **via AWS's RDS**  
+   **Database**: PostgreSQL *via AWS's RDS*  
    **Deployment**: AWS E2 Instance (http://54.187.154.214:5003)
   * Public IP: 54.187.154.214
   * Port: 5003

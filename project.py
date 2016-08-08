@@ -10,11 +10,22 @@ import urllib3
 
 
 def get_path():
+    """
+    This function takes no parameters and returns the api/dataset directory pathway.
+    :return: api/dataset directory pathway
+    """
     f_name = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'api', 'dataset')
     return f_name
 
 
 def download(url, path):
+    """
+    This function takes 2 parameters, URL with CSV file and pathway to save the CSV file. The function utilizes the
+    urllib3 library to download the CSV file from the URL and save it in the specified path.
+    :param url: URL containing CSV file
+    :param path: pathway to save CSV file
+    :return: None
+    """
     http = urllib3.PoolManager()
     r = http.request('GET', url, preload_content=False)
     with open(path, 'wb') as output:
@@ -29,7 +40,13 @@ def download(url, path):
 
 
 def readCSV():
+    """
+    This function takes no parameters and returns the CMS Aggregrate Report CSV file as a DataFrame. If the CSV file
+    does not yet exist locally, the function will download the CSV file implementing the urllib3 package.
+    :return: DataFrame of 'Report' CSV file
+    """
     f='Medicare_Physician_and_Other_Supplier_National_Provider_Identifier__NPI__Aggregate_Report__Calendar_Year_2014.csv'
+    # Check for existing local CSV file
     f_path = os.path.join(get_path(), f)
     if not os.path.isfile(f_path):
         print "Downloading Report CSV file -- download may take awhile..."
@@ -120,7 +137,7 @@ def readCSV():
     state = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
              'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK',
              'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY', 'DC']
-
+    # Edit formatting of Zip Code & Corrected Typos in State Abbreviation
     terr = ['PR', 'GU', 'VI', 'AS', 'District of Columbia', 'MP', 'AA', 'AE', 'AP'] #USA territories
     usa = state+terr
     data=df.as_matrix()
@@ -136,16 +153,20 @@ def readCSV():
     #Convert to recarray -- transfer hetergeneous column dtypes to DataFrame
     state_recarray = np.core.records.fromarrays(np.transpose(state_data), dtype=types, names=columns)
     #Convert to Pandas DataFrame
-    # state_df = pd.DataFrame(data=state_data, columns=columns)
-    # state_df = state_df.convert_objects(convert_numeric=True)
-
     state_df = pd.DataFrame.from_records(state_recarray, columns=columns)
-    state_df = state_df.replace(to_replace='', value=np.nan)
+    state_df = state_df.replace(to_replace='', value=np.nan) # replace empty fields with NaN/null
     return state_df
 
 
 def readPUF():
+    """
+    This function takes no parameters and returns the CMS Provider Utilization and Payment Data (PUF) CSV file as a
+    DataFrame. If the CSV file does not yet exist locally, the function will download the CSV file implementing the
+    urllib3 package.
+    :return: DataFrame of 'Puf' CSV file
+    """
     puf_f ='Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv'
+    # Check for existing local CSV file
     puf_path = os.path.join(get_path(), puf_f)
     if not os.path.isfile(puf_path):
         print "Downloading PUF CSV file -- download may take awhile..."
@@ -177,12 +198,12 @@ def readPUF():
            'average_medicare_allowed_amount', 'average_submitted_charge_amount', 'average_medicare_payment_amount',
            'average_medicare_standardized_amount']
 
-    #read in CSV in chunks -- chunks of rows
+    # Parse large CSV into chunks of DataFrames
     csv_path= os.path.join(get_path(),
                            'Medicare_Provider_Utilization_and_Payment_Data__Physician_and_Other_Supplier_PUF_CY2014.csv')
     reader = pd.read_csv(csv_path, iterator=True, chunksize=2000000, na_values='', names=puf_columns, dtype=puf_types,
                          usecols=sel, header=0)
-    #accumulate chunks in list
+    # List of DataFrame chunks
     pd_lst=[]
     for chunk in reader:
         pd_lst+=[chunk]
@@ -190,24 +211,31 @@ def readPUF():
 
 
 def readBCH():
+    """
+    This function takes no parameters and returns the Big Cities Health Coalition CSV file as a DataFrame. If the CSV
+    file does not yet exist locally, the function will download the CSV file implementing the urllib3 package.
+    :return: DataFrame of 'Cancer' CSV file
+    :return:
+    """
     bch_f ='cancer_state.csv'
+    # Check for existing local CSV file
     bch_path = os.path.join(get_path(), bch_f)
     if not os.path.isfile(bch_path):
         print "Downloading Cancer CSV file -- download may take awhile..."
         download('https://opendata.socrata.com/api/views/mqh4-spnv/rows.csv?accessType=DOWNLOAD', bch_path)
         print "Cancer CSV download complete"
     columns = ['indicator', 'year', 'gender', 'race', 'value', 'place']
-    # type = [('indicator', 'S10'), ('year', np.uint64), ('gender', 'S10'), ('race', 'S10'), ('value', np.float64), ('place'. 'S50')]
     df = pd.read_csv(os.path.join(get_path(), 'cancer_state.csv'), sep=',', names=columns, header=0, na_values='')
     df['place']=df['place'].apply(lambda x: x[-2:]) #filter for only state code
     return df
 
 
 def init_db():
-
+    """This function takes no parameters and initializes the database, if no database exists yet. The function will
+        create the database table schema and insert the data appropriately."""
     #Create engine to store data in local directory's db file
     db_name = os.path.basename(app.config['SQLALCHEMY_DATABASE_URI'])
-    db_path=os.path.join(get_path(), db_name) #hardcode
+    db_path=os.path.join(get_path(), db_name)
 
     db_is_new = not os.path.exists(db_path)
     if db_is_new:
@@ -221,15 +249,18 @@ def init_db():
         print "Table(s) schema created, inserting data..."
 
         #Insert Data -- Bulk insert of DataFrame
+        ## Insert Report CSV -- Report Table
         df_report = readCSV()
         report_lst = df_report.to_dict(orient='records')  # orient by records to align format
         db.session.execute(Report.__table__.insert(), report_lst)
         db.session.commit()
+        ## Insert PUF CSV -- Puf Table
         df_puf = readPUF()
         for elem in df_puf[:5]:
             puf_lst = elem.to_dict(orient='records')
             db.session.execute(Puf.__table__.insert(), puf_lst)
             db.session.commit()
+        ## Insert BCHC CSV -- Cancer Table
         df_can = readBCH()
         can_lst = df_can.to_dict(orient='records')
         db.session.execute(Cancer.__table__.insert(), can_lst)

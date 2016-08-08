@@ -16,16 +16,16 @@ quality of care for a given year.
 
 ## Deploy Web Application
 The Flask web application is deployed through AWS's E2 instance (Ubuntu 14.04 server). The owner must run the 
-web application via `python run_api.py` through the terminal within the Ubuntu server. 
+web application via `$ python run_api.py` through the terminal within the Ubuntu server. 
 *Notes*:
   * URL: http://54.187.154.214:5003
   * The AWS branch of the project encompasses the deployment version of the application.
 
 ## Local Deployment (Steps)
-1. Clone git repository `git clone <repo>`
+1. Clone git repository `$ git clone <repo>`
 2. Create [virtual environment] & activate
-3. Install Python application requirements: `pip install -r requirements.txt`
-4. cd into root directory of repo within the terminal and run application: `python run_api.py`
+3. Install Python application requirements: `$ pip install -r requirements.txt`
+4. cd into root directory of repo within the terminal and run application: `$ python run_api.py`
 5. Launch http://localhost:5003/
 [virtual environment]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
 
@@ -71,6 +71,17 @@ SQL databases and Python code. SQLAlchemy's syntax is implemented for table sche
 
 For more information, please refer to [SQLAlchemy's documentation].
 [SQLAlchemy's documentation]: http://docs.sqlalchemy.org/en/latest/
+
+### Database Initialization
+The database is already initialized for the deployment of the *production configuration* to the AWS E2 instance. 
+For local or another server-based setup of the database, follow these steps:  
+
+1. Select appropriate configuration in the **api/__init__.py** file: `app.config.from_object('config.ProductionConfig')`
+  * BaseConfig: **sqlite3**
+  * DevelopmentalConfig: **PostgresSQL**
+  * ProductionConfig: **AWS RDS: PostgresSQL**
+2. cd into the root of the project directory
+3. Create database schema & bulk insert of data from CSV file: **(Terminal)** Run `$ python db_create.py`
 
 
 ## Machine Learning

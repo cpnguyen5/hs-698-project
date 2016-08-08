@@ -1,24 +1,66 @@
 # HS 698 Project
 #### Centers for Medicare & Medicaid Services (CMS): Provider Utilization & Payment Plan
+![alt text](http://www.csh.org/wp-content/uploads/2015/06/CMS.jpg "CMS")
 
 ## Project Description
-##### Web Development of Geographical Inter-variability of Healthcare Costs for Cancer Beneficiaries
-The project will utilize the CMS (Centers for Medicare & Medicaid Services) Provider Utilization by 
-Physician dataset in order to conduct exploratory investigation of the services and procedures provided 
-to Medicare beneficiaries by physicians. The deliverable will be to implement an interactive web application 
-that depicts the prevalence of cancer beneficiaries and their respective costs by geographic location. The 
-web application will visualize the constantly updated database, necessitating its development on top of a 
-database. The project will essentially be a cross-sectional study to provide a high-level scope on the 
-geographical inter-variability of healthcare costs for cancer beneficiaries. My focus will primarily center 
-on databases and Python-based web development in order to further hone my skills on database query and 
-extraction to output the necessary data for visualization. SQLite will be initially utilized for database 
-queries. If possible, the project will shift from SQLite to a more sophisticated database management system 
-(e.g. PostgreSQL) to further develop my database experience. Additionally, my goal is to improve my 
-understanding of the application workflow and proficiently tie together the various components involved. 
-The project will require visualization of an interactive U.S. map, in which users will be able to determine 
-the prevalence rate of cancers and their respective costs by each geographic location. Furthermore,
-visualization of racial inter-variability of costs for cancer beneficiaries by geographical location will 
-also be an objective if possible despite time and resource constraints.
+##### Web Application Development Exploring Healthcare Utilization under Medicare & Medicaid Programs
+### Purpose
+Develop a Python Flask web application (lightweight web framework) to investigate the utilization 
+of services & procedures and the relative healthcare costs amongst providers participating in 
+Medicare & Medicaid programs. The goal of such data exploration is to evaluate the current quality 
+of care being provided to beneficiaries under the CMS (Centers for Medicare & Medicaid Services) 
+fee-for-serve programs. Essentially, this project is a cross-sectional study to provide a high-level
+scope on the variability of healthcare costs in relation to key factors (e.g. demographics, utilized services).
+The web application is built upon a SQL database, which may be constantly updated to evaluate the 
+quality of care for a given year.
+
+## Deploy Web Application
+The Flask web application is deployed through AWS's E2 instance (Ubuntu 14.04 server). The owner must run the 
+web application via `python run_api.py` through the terminal within the Ubuntu server. 
+*Notes*:
+  * URL: http://54.187.154.214:5003
+  * The AWS branch of the project encompasses the deployment version of the application.
+
+## Local Deployment (Steps)
+1. Clone git repository `git clone <repo>`
+2. Create [virtual environment] & activate
+3. Install Python application requirements: `pip install -r requirements.txt`
+4. cd into root directory of repo within the terminal and run application: `python run_api.py`
+5. Launch http://localhost:5003/
+[virtual environment]: http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+## Branches
+### Master
+The master branch provides the foundation for the project and other corresponding branches.
+
+### sqlite3
+The sqlite3 branch is identical to the master branch and preserves the sqlite3 database configuration.
+*Database*: local sqlite3
+*Deployment*: local (http://localhost:5003/)
+  * Port: 5003
+
+### dev
+The dev branch consists of the **developmental** configuration, implementing a local PostgreSQL database.
+*Database*: local PostgreSQL
+*Deployment*: local (http://localhost:5003/)
+  * Port: 5003
+
+### aws
+The aws branch consists of the **production** configuration, implementing a server-based PostgreSQL database
+through Amazon Web Service's (AWS) Relational Database Service (RDS).
+*Database*: PostgreSQL **via AWS's RDS**
+*Deployment*: AWS E2 Instance (http://54.187.154.214:5003)
+  * Public IP: 54.187.154.214
+  * Port: 5003
+ 
+ 
+## SQL Database
+The project uses sqlite3 for development and PostgreSQL for both development and production/deployment purposes.
+SQLAlchemy, an object relational mapper, is utilized to efficiently bridge the connection between the underlying
+SQL databases and Python code. SQLAlchemy's syntax is implemented for table schema, database insert, and queries.
+
+For more information, please refer to [SQLAlchemy's documentation].
+[SQLAlchemy's documentation]: http://docs.sqlalchemy.org/en/latest/
 
 
 ## Machine Learning
@@ -36,7 +78,4 @@ The following are a few observations from the attempts:
     additional clusters appeared to be more similar to outliers, in terms of function. Thus, this dominance of a label
     may indicate low variance amongst the data.
   * The variables of the data appeared to generally have a linear relationship. Thus, clustering may not be the best
-    approach for machine learning applications.
-    
-## Requirements
-  
+    approach for machine learning applications.  
